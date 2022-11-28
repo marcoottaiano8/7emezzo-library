@@ -4,7 +4,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" =
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = Login;
+exports.default = Signup;
 var _react = _interopRequireWildcard(require("react"));
 var _reactNative = require("react-native");
 var _CustomInputBox = _interopRequireDefault(require("../CustomInputBox"));
@@ -24,8 +24,8 @@ function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o =
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 function _iterableToArrayLimit(arr, i) { var _i = null == arr ? null : "undefined" != typeof Symbol && arr[Symbol.iterator] || arr["@@iterator"]; if (null != _i) { var _s, _e, _x, _r, _arr = [], _n = !0, _d = !1; try { if (_x = (_i = _i.call(arr)).next, 0 === i) { if (Object(_i) !== _i) return; _n = !1; } else for (; !(_n = (_s = _x.call(_i)).done) && (_arr.push(_s.value), _arr.length !== i); _n = !0) { ; } } catch (err) { _d = !0, _e = err; } finally { try { if (!_n && null != _i.return && (_r = _i.return(), Object(_r) !== _r)) return; } finally { if (_d) throw _e; } } return _arr; } }
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
-var email, password;
-function Login(props) {
+var username, email, password;
+function Signup(props) {
   var _useResponsive = (0, _useResponsive3.default)(),
     _useResponsive2 = _slicedToArray(_useResponsive, 3),
     Mobile = _useResponsive2[0],
@@ -40,14 +40,29 @@ function Login(props) {
   function log(e) {
     console.log("test");
   }
-  function checkLogin() {
-    console.log("login");
-    props.goToGame();
+  function goToLogin() {
+    if (!!props.goToLogin) {
+      props.goToLogin();
+    }
+  }
+  function checkSignUp() {
+    console.log("registrato");
+    goToLogin();
+  }
+  function setUsername(e) {
+    username = e;
+    var disable = true;
+    if (!!username && !!email && !!password) {
+      disable = false;
+    }
+    setState(_objectSpread(_objectSpread({}, state), {}, {
+      disable: disable
+    }));
   }
   function setEmail(e) {
     email = e;
     var disable = true;
-    if (!!email && !!password) {
+    if (!!username && !!email && !!password) {
       disable = false;
     }
     setState(_objectSpread(_objectSpread({}, state), {}, {
@@ -57,17 +72,12 @@ function Login(props) {
   function setPassword(e) {
     password = e;
     var disable = true;
-    if (!!email && !!password) {
+    if (!!username && !!email && !!password) {
       disable = false;
     }
     setState(_objectSpread(_objectSpread({}, state), {}, {
       disable: disable
     }));
-  }
-  function goToSignup() {
-    if (!!props.goToSignup) {
-      props.goToSignup();
-    }
   }
   return /*#__PURE__*/_react.default.createElement(_reactNative.View, {
     style: mobile.mainContainer
@@ -80,21 +90,24 @@ function Login(props) {
   }, "7 e mezzo"), /*#__PURE__*/_react.default.createElement(_reactNative.View, {
     style: isMobile ? mobile.container : [mobile.container, desktop.container]
   }, /*#__PURE__*/_react.default.createElement(_CustomInputBox.default, {
+    placeholder: "Username...",
+    callbackChange: setUsername
+  }), /*#__PURE__*/_react.default.createElement(_CustomInputBox.default, {
     placeholder: "Email...",
     callbackChange: setEmail
   }), /*#__PURE__*/_react.default.createElement(_CustomInputBox.default, {
     placeholder: "Password...",
     callbackChange: setPassword
   }), /*#__PURE__*/_react.default.createElement(_CustomButton.default, {
-    label: "Accedi",
-    callback: checkLogin,
+    label: "Registrati",
+    callback: checkSignUp,
     disable: state.disable
   }), /*#__PURE__*/_react.default.createElement(_reactNative.TouchableOpacity, {
     style: mobile.subtitle,
-    onPress: goToSignup
+    onPress: goToLogin
   }, /*#__PURE__*/_react.default.createElement(_reactNative.Text, {
     style: mobile.text
-  }, "Non hai un account? Registrati")))));
+  }, "Hai gi\xE1 un account? Accedi")))));
 }
 var mobile = _reactNative.StyleSheet.create({
   mainContainer: {

@@ -5,7 +5,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.updateAuthTokenApi = updateAuthTokenApi;
 var _react = _interopRequireDefault(require("react"));
-var _utils = require("../../utils");
+var _utils = require("../../utils/utils");
 var _genericServices = require("../genericServices");
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
