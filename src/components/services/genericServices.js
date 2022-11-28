@@ -1,7 +1,7 @@
 import axios from "axios";
 import CONFIG from "./genericConfig";
 import { updateAuthTokenApi } from "./api/updateAuthTokenApi";
-import { getDataFromStorage, setDataInStorage } from "../utils";
+import { getDataFromStorage, setDataInStorage } from "../utils/utils";
 
 //instanza axios per chiamate non autenticate
 const axiosInstance = axios.create({

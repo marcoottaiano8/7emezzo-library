@@ -11,9 +11,9 @@ import CustomInputBox from "../CustomInputBox";
 import CustomButton from "../CustomButton";
 import useResponsive from "../utils/useResponsive";
 
-let email, password;
+let username, email, password;
 
-export default function Login(props) {
+export default function Signup(props) {
   const [Mobile, Default, isMobile] = useResponsive();
   const [state, setState] = useState({
     disable: true,
@@ -23,15 +23,33 @@ export default function Login(props) {
     console.log("test");
   }
 
-  function checkLogin() {
-    console.log("login");
-    props.goToGame();
+  function goToLogin() {
+    if (!!props.goToLogin) {
+      props.goToLogin();
+    }
+  }
+
+  function checkSignUp() {
+    console.log("registrato");
+    goToLogin();
+  }
+
+  function setUsername(e) {
+    username = e;
+    let disable = true;
+    if (!!username && !!email && !!password) {
+      disable = false;
+    }
+    setState({
+      ...state,
+      disable: disable,
+    });
   }
 
   function setEmail(e) {
     email = e;
     let disable = true;
-    if (!!email && !!password) {
+    if (!!username && !!email && !!password) {
       disable = false;
     }
     setState({
@@ -43,19 +61,13 @@ export default function Login(props) {
   function setPassword(e) {
     password = e;
     let disable = true;
-    if (!!email && !!password) {
+    if (!!username && !!email && !!password) {
       disable = false;
     }
     setState({
       ...state,
       disable: disable,
     });
-  }
-
-  function goToSignup() {
-    if (!!props.goToSignup) {
-      props.goToSignup();
-    }
   }
 
   return (
@@ -71,18 +83,22 @@ export default function Login(props) {
             isMobile ? mobile.container : [mobile.container, desktop.container]
           }
         >
+          <CustomInputBox
+            placeholder={"Username..."}
+            callbackChange={setUsername}
+          />
           <CustomInputBox placeholder={"Email..."} callbackChange={setEmail} />
           <CustomInputBox
             placeholder={"Password..."}
             callbackChange={setPassword}
           />
           <CustomButton
-            label={"Accedi"}
-            callback={checkLogin}
+            label={"Registrati"}
+            callback={checkSignUp}
             disable={state.disable}
           />
-          <TouchableOpacity style={mobile.subtitle} onPress={goToSignup}>
-            <Text style={mobile.text}>Non hai un account? Registrati</Text>
+          <TouchableOpacity style={mobile.subtitle} onPress={goToLogin}>
+            <Text style={mobile.text}>Hai giá un account? Accedi</Text>
           </TouchableOpacity>
         </View>
       </ImageBackground>
