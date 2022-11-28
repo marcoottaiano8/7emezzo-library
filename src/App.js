@@ -1,10 +1,7 @@
 import React from "react";
+import Login from "./components/screens/Login";
 function App() {
-  return (
-    <div >
-      
-    </div>
-  );
+  return <Login />;
 }
 
 export default App;
