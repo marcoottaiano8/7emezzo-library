@@ -21,6 +21,12 @@ Object.defineProperty(exports, "Login", {
     return _Login.default;
   }
 });
+Object.defineProperty(exports, "Signup", {
+  enumerable: true,
+  get: function get() {
+    return _Signup.default;
+  }
+});
 Object.defineProperty(exports, "Utils", {
   enumerable: true,
   get: function get() {
@@ -31,4 +37,5 @@ var _CustomButton = _interopRequireDefault(require("./CustomButton"));
 var _CustomInputBox = _interopRequireDefault(require("./CustomInputBox"));
 var _utils = _interopRequireDefault(require("./utils/utils"));
 var _Login = _interopRequireDefault(require("./screens/Login"));
+var _Signup = _interopRequireDefault(require("./screens/Signup"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
