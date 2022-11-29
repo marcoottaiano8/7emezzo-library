@@ -4,11 +4,21 @@ import { signinApi } from "./components/services/api/loginApi";
 import { fetchData } from "./components/utils/utils";
 import Login from "./components/screens/Login";
 import Signup from "./components/screens/Signup";
+import { useFonts } from "expo-font";
+import Home from "./components/screens/Home";
 
 function App() {
-  useEffect(() => {
-    prepare();
-  });
+  // const [loaded] = useFonts({
+  //   Montserrat: require("./components/assets/fonts/MarvelRegular-Dj83.otf"),
+  // });
+
+  // // useEffect(() => {
+  // //   prepare();
+  // // });
+
+  // if (!loaded) {
+  //   return null;
+  // }
 
   async function prepare() {
     let response = await fetchData(signinApi, {
@@ -19,7 +29,7 @@ function App() {
   }
   return (
     <View>
-      <Signup />
+      <Home />
     </View>
   );
 }

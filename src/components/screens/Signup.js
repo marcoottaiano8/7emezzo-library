@@ -10,6 +10,7 @@ import {
 import CustomInputBox from "../CustomInputBox";
 import CustomButton from "../CustomButton";
 import useResponsive from "../utils/useResponsive";
+import commonstyle from "../style/commonStyle";
 
 let username, email, password;
 
@@ -71,13 +72,13 @@ export default function Signup(props) {
   }
 
   return (
-    <View style={mobile.mainContainer}>
+    <View style={commonstyle.mainContainer}>
       <ImageBackground
-        source={require("../assets/images/sfondo2.jpg")}
+        source={require("../assets/images/sfondo.jpg")}
         resizeMode="cover"
-        style={mobile.backgroundImg}
+        style={commonstyle.backgroundImg}
       >
-        <Text style={mobile.title}>7 e mezzo</Text>
+        <Text style={commonstyle.title}>7 e mezzo</Text>
         <View
           style={
             isMobile ? mobile.container : [mobile.container, desktop.container]
@@ -107,35 +108,13 @@ export default function Signup(props) {
 }
 
 const mobile = StyleSheet.create({
-  mainContainer: {
-    flex: 1,
-    width: "100%",
-    height: "100%",
-    minHeight: Dimensions.get("window").height,
-  },
-  backgroundImg: {
-    alignItems: "center",
-    height: Dimensions.get("window").height,
-    width: Dimensions.get("window").width,
-  },
   container: {
     flex: 1,
     marginBottom: Dimensions.get("window").height / 4,
-    marginHorizontal: 30,
+    marginHorizontal: "auto",
     justifyContent: "flex-end",
-    width: Dimensions.get("window").width / 1.5,
+    minWidth: Dimensions.get("window").width / 1.5,
     textAlign: "center",
-  },
-  title: {
-    marginTop: 80,
-    paddingTop: 40,
-    color: "#3c5070",
-    fontSize: 50,
-    textAlign: "center",
-    textShadowOffset: { width: 3, height: 1 },
-    textShadowColor: "#ffe4e5",
-    textShadowRadius: 1,
-    fontWeight: "bold",
   },
   subtitle: {
     marginTop: 20,
@@ -144,6 +123,7 @@ const mobile = StyleSheet.create({
   text: {
     fontSize: 16,
     fontWeight: "bold",
+    color: "white",
   },
 });
 
@@ -152,5 +132,6 @@ const desktop = StyleSheet.create({
     justifyContent: "flex-start",
     marginTop: 100,
     width: Dimensions.get("window").width / 3,
+    minWidth: 0,
   },
 });
