@@ -20,8 +20,9 @@ import commonStyle from "../style/commonStyle";
 import CustomModal from "../CustomModal"
 
 //redux
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { setLogin } from "../redux/loginDuck";
+import { setLoggedState, saveUserData } from "../redux/userDuck"
 
 let email, password;
 
@@ -36,8 +37,6 @@ export default function Login(props) {
     modalTitle: null,
     modalBody: null
   });
-
-  const user = useSelector((state) => state.userDuck.user);
 
   //login
   async function checkLogin() {
@@ -60,16 +59,15 @@ export default function Login(props) {
       modalTitle=""
       modalBody= "Login avvenuto con successo"
 
-      console.log(res)
-      /*//localStorage for Token
-      setDataInStorage("onlusToken", tempUser?.data?.token);
-      setDataInStorage("onlusRefreshToken", tempUser?.data?.refreshToken);
-
-      //set sessionStorage
-      sessionStorage.setItem("user", JSON.stringify(tempUser?.data));
-      sessionStorage.setItem("userLogedIn", JSON.stringify(true));
+      setDataInStorage("token", res.data.token);
+      setDataInStorage("refreshToken", res.data.refreshToken);
+      setDataInStorage("user", JSON.stringify(res.data));
+      setDataInStorage("userLoggedIn", JSON.stringify(true));
+      
       dispatch(setLogin({ loginToken: true }))
-*/
+      dispatch(setLoggedState({isLoggedIn : true}))
+      dispatch(saveUserData({userData: res.data}))
+
       goToHome()
     }
     setState({
