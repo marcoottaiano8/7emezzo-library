@@ -18,13 +18,21 @@ export default function Home() {
   const [Mobile, Default, isDesktop] = useResponsive();
 
   const [state, setState] = useState({
-    modal: false,
+    fastGameModal: false,
+    createLobbyModal: false,
   });
 
-  function setModal() {
+  function setFastGameModal() {
     setState({
       ...state,
-      modal: !state.modal,
+      fastGameModal: !state.fastGameModal,
+    });
+  }
+
+  function setCreateLobbyModal() {
+    setState({
+      ...state,
+      createLobbyModal: !state.createLobbyModal,
     });
   }
   function goToRanking() {
@@ -46,14 +54,36 @@ export default function Home() {
               style={mobile.image}
             />
           </View>
-          <CustomButton label={"Partita veloce"} callback={setModal} />
-          <CustomButton label={"Crea lobby"} callback={setModal} />
+          <CustomButton label={"Partita veloce"} callback={setFastGameModal} />
+          <CustomButton label={"Crea lobby"} callback={setCreateLobbyModal} />
           <CustomButton label={"Classifica"} callback={goToRanking} />
         </View>
         <CustomModal
-          visible={state.modal}
-          callbackClose={setModal}
-        ></CustomModal>
+          visible={state.fastGameModal}
+          callbackClose={setFastGameModal}
+        >
+          <Text style={[mobile.text, mobile.title]}>Lobby</Text>
+          <View style={mobile.modalContainer}>
+            <Text style={mobile.text}>In attesa di altri giocatori...</Text>
+          </View>
+        </CustomModal>
+        <CustomModal
+          visible={state.createLobbyModal}
+          callbackClose={setCreateLobbyModal}
+        >
+          <Text style={[mobile.text, mobile.title]}>Lobby</Text>
+          <View style={mobile.modalContainer}>
+            <Text style={mobile.text}>In attesa di altri giocatori...</Text>
+            <View
+              style={{
+                marginTop: 40,
+                marginBottom: -30,
+              }}
+            >
+              <CustomButton label="Inizia partita" />
+            </View>
+          </View>
+        </CustomModal>
       </ImageBackground>
     </View>
   );
@@ -68,6 +98,18 @@ const mobile = StyleSheet.create({
   image: {
     height: 200,
     width: 200,
+  },
+  modalContainer: {
+    marginTop: 20,
+  },
+  title: {
+    fontSize: 35,
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  text: {
+    fontSize: 20,
+    color: "white",
   },
 });
 
