@@ -20,10 +20,8 @@ export const saveUserData = (userData) => (dispatch) => {
 const userDuck = createSlice({
   name: "userDuck",
   initialState: {
-    isLoggedIn: !!getDataFromStorage("user")
-      ? getDataFromStorage("user").id
-      : false,
-    userData: {},
+    isLoggedIn: undefined,
+    userData: undefined,
   },
   reducers: {
     setLoggedStateAction: (state, action) => {
