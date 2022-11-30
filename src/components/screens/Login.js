@@ -9,7 +9,7 @@ import {
 } from "react-native";
 
 //api
-import { fetchData } from "../utils/utils";
+import { fetchData, setDataInStorage } from "../utils/utils";
 import { signinApi } from "../services/api/loginApi"
 
 //components
@@ -19,11 +19,16 @@ import useResponsive from "../utils/useResponsive";
 import commonStyle from "../style/commonStyle";
 import CustomModal from "../CustomModal"
 
+//redux
+import { useDispatch, useSelector } from "react-redux";
+import { setLogin } from "../redux/loginDuck";
+
 let email, password;
 
 export default function Login(props) {
-  const [Mobile, Default, isDesktop] = useResponsive();
 
+  const dispatch = useDispatch();
+  const [Mobile, Default, isDesktop] = useResponsive();
   //state
   const [state, setState] = useState({
     disable: true,
@@ -31,6 +36,8 @@ export default function Login(props) {
     modalTitle: null,
     modalBody: null
   });
+
+  const user = useSelector((state) => state.userDuck.user);
 
   //login
   async function checkLogin() {
@@ -52,6 +59,17 @@ export default function Login(props) {
     else if (res.status === 200) {
       modalTitle=""
       modalBody= "Login avvenuto con successo"
+
+      console.log(res)
+      /*//localStorage for Token
+      setDataInStorage("onlusToken", tempUser?.data?.token);
+      setDataInStorage("onlusRefreshToken", tempUser?.data?.refreshToken);
+
+      //set sessionStorage
+      sessionStorage.setItem("user", JSON.stringify(tempUser?.data));
+      sessionStorage.setItem("userLogedIn", JSON.stringify(true));
+      dispatch(setLogin({ loginToken: true }))
+*/
       goToHome()
     }
     setState({

@@ -18,7 +18,7 @@ function App() {
   }
   return (
     <View>
-      <Home />
+      <Login />
     </View>
   );
 }
