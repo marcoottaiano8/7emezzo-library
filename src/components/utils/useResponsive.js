@@ -2,7 +2,7 @@ import { useMediaQuery } from "react-responsive";
 
 const useResponsive = () => {
   
-  const isMobile = useMediaQuery({ maxWidth: 650 });
+  const isDesktop = useMediaQuery({ minWidth: 650 });
 
   const Default = ({ children }) => {
     const isNotMobile = useMediaQuery({ minWidth: 992 });
@@ -14,7 +14,7 @@ const useResponsive = () => {
     return isMobile ? children : null;
   };
 
-  return [Mobile, Default, isMobile];
+  return [Mobile, Default, isDesktop];
 };
 
 export default useResponsive;

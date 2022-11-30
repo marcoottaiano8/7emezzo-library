@@ -114,10 +114,7 @@ var mobile = _reactNative.StyleSheet.create({
   container: {
     flex: 1,
     marginBottom: _reactNative.Dimensions.get("window").height / 4,
-    marginHorizontal: "auto",
-    justifyContent: "flex-end",
-    minWidth: _reactNative.Dimensions.get("window").width / 1.5,
-    textAlign: "center"
+    justifyContent: "flex-end"
   },
   subtitle: {
     marginTop: 20,
@@ -126,14 +123,13 @@ var mobile = _reactNative.StyleSheet.create({
   text: {
     fontSize: 16,
     fontWeight: "bold",
-    color: "white"
+    color: "white",
+    textAlign: "center"
   }
 });
 var desktop = _reactNative.StyleSheet.create({
   container: {
     justifyContent: "flex-start",
-    marginTop: 100,
-    width: _reactNative.Dimensions.get("window").width / 3,
-    minWidth: 0
+    marginTop: 100
   }
 });

@@ -16,7 +16,8 @@ var commonstyle = _reactNative.StyleSheet.create({
   },
   backgroundImg: {
     height: _reactNative.Dimensions.get("window").height,
-    width: _reactNative.Dimensions.get("window").width
+    width: _reactNative.Dimensions.get("window").width,
+    alignItems: "center"
   },
   title: {
     marginTop: 80,

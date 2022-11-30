@@ -1,14 +1,17 @@
 import React from "react";
+import useResponsive from "./utils/useResponsive";
 
 import {
   TouchableOpacity,
   Text,
-  Platform,
   StyleSheet,
   View,
+  Dimensions,
 } from "react-native";
 
 function CustomButton(props) {
+  const [Mobile, Default, isMobile] = useResponsive();
+
   const handleClick = () => {
     if (!!props.callback) {
       props.callback();
@@ -22,7 +25,13 @@ function CustomButton(props) {
       onPress={handleClick}
     >
       <View>
-        <Text style={props.isDesktop ? [mobile.text, desktopStyle.text] : mobile.text}>{props.label}</Text>
+        <Text
+          style={
+            props.isDesktop ? [mobile.text, desktopStyle.text] : mobile.text
+          }
+        >
+          {props.label}
+        </Text>
       </View>
     </TouchableOpacity>
   );
@@ -38,17 +47,19 @@ const mobile = StyleSheet.create({
     backgroundColor: "#F10D26",
     border: "none",
     borderRadius: 30,
-    paddingHorizontal: 35,
-    paddingVertical: 15,
+    paddingHorizontal: 25,
+    paddingVertical: 10,
+    marginBottom: 30,
+    marginHorizontal: 20,
   },
   disable: {
     opacity: 0.5,
   },
   text: {
     fontWeight: "bold",
-    fontSize: 15,
+    fontSize: 20,
     color: "white",
-    textAlign: 'center'
+    textAlign: "center",
   },
 });
 

@@ -6,8 +6,8 @@ Object.defineProperty(exports, "__esModule", {
 exports.default = void 0;
 var _reactResponsive = require("react-responsive");
 var useResponsive = function useResponsive() {
-  var isMobile = (0, _reactResponsive.useMediaQuery)({
-    maxWidth: 650
+  var isDesktop = (0, _reactResponsive.useMediaQuery)({
+    minWidth: 650
   });
   var Default = function Default(_ref) {
     var children = _ref.children;
@@ -23,7 +23,7 @@ var useResponsive = function useResponsive() {
     });
     return isMobile ? children : null;
   };
-  return [Mobile, Default, isMobile];
+  return [Mobile, Default, isDesktop];
 };
 var _default = useResponsive;
 exports.default = _default;

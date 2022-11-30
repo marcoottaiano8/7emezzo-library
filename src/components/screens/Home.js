@@ -12,7 +12,7 @@ import commonStyle from "../style/commonStyle";
 import useResponsive from "../utils/useResponsive";
 
 export default function Home() {
-  const [Mobile, Default, isMobile] = useResponsive();
+  const [Mobile, Default, isDesktop] = useResponsive();
 
   function log(e) {
     console.log("test");
@@ -26,11 +26,7 @@ export default function Home() {
         style={commonStyle.backgroundImg}
       >
         <Text style={commonStyle.title}>7 e mezzo</Text>
-        <View
-          style={
-            isMobile ? mobile.container : [mobile.container, desktop.container]
-          }
-        >
+        <View style={[mobile.container, isDesktop && desktop.container]}>
           <Image
             source={require("../assets/images/ironman.gif")}
             style={mobile.image}
@@ -47,10 +43,7 @@ const mobile = StyleSheet.create({
   container: {
     flex: 1,
     marginBottom: Dimensions.get("window").height / 4,
-    marginHorizontal: "auto",
     justifyContent: "flex-end",
-    minWidth: Dimensions.get("window").width / 1.5,
-    gap: 30,
   },
   image: {
     height: 200,
@@ -63,7 +56,5 @@ const desktop = StyleSheet.create({
   container: {
     justifyContent: "flex-start",
     marginTop: 100,
-    width: Dimensions.get("window").width / 3,
-    minWidth: 0,
   },
 });

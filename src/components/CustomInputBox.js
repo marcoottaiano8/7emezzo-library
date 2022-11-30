@@ -1,8 +1,11 @@
 import React, { useState } from "react";
 
-import { TextInput, StyleSheet } from "react-native";
+import { TextInput, StyleSheet, Dimensions } from "react-native";
+import useResponsive from "./utils/useResponsive";
 
 function CustomInputBox(props) {
+  const [Mobile, Default, isDesktop] = useResponsive();
+
   const [state, setState] = useState({
     value: "",
   });
@@ -16,7 +19,7 @@ function CustomInputBox(props) {
 
   return (
     <TextInput
-      style={style.inputbox}
+      style={[style.inputbox, isDesktop && desktop.inputbox]}
       placeholder={props.placeholder}
       onChangeText={changeInput}
       value={state.value}
@@ -28,6 +31,7 @@ function CustomInputBox(props) {
 const style = StyleSheet.create({
   inputbox: {
     backgroundColor: "#ffffff",
+    width: 250,
     paddingHorizontal: 20,
     paddingVertical: 15,
     marginBottom: 30,
@@ -35,6 +39,12 @@ const style = StyleSheet.create({
     textAlign: "center",
     borderRadius: 20,
     borderWidth: 1,
+  },
+});
+
+const desktop = StyleSheet.create({
+  inputbox: {
+    width: 400,
   },
 });
 

@@ -15,7 +15,7 @@ import commonstyle from "../style/commonStyle";
 let username, email, password;
 
 export default function Signup(props) {
-  const [Mobile, Default, isMobile] = useResponsive();
+  const [Mobile, Default, isDesktop] = useResponsive();
   const [state, setState] = useState({
     disable: true,
   });
@@ -79,11 +79,7 @@ export default function Signup(props) {
         style={commonstyle.backgroundImg}
       >
         <Text style={commonstyle.title}>7 e mezzo</Text>
-        <View
-          style={
-            isMobile ? mobile.container : [mobile.container, desktop.container]
-          }
-        >
+        <View style={[mobile.container, isDesktop && desktop.container]}>
           <CustomInputBox
             placeholder={"Username..."}
             callbackChange={setUsername}
@@ -111,10 +107,7 @@ const mobile = StyleSheet.create({
   container: {
     flex: 1,
     marginBottom: Dimensions.get("window").height / 4,
-    marginHorizontal: "auto",
     justifyContent: "flex-end",
-    minWidth: Dimensions.get("window").width / 1.5,
-    textAlign: "center",
   },
   subtitle: {
     marginTop: 20,
@@ -124,6 +117,7 @@ const mobile = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
     color: "white",
+    textAlign: "center",
   },
 });
 
@@ -131,7 +125,5 @@ const desktop = StyleSheet.create({
   container: {
     justifyContent: "flex-start",
     marginTop: 100,
-    width: Dimensions.get("window").width / 3,
-    minWidth: 0,
   },
 });
