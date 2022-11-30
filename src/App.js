@@ -14,7 +14,7 @@ function App() {
   return (
     <Provider store={store}>
       <View>
-        <Login />
+        <Ranking />
       </View>
     </Provider>
   );
