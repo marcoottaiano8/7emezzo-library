@@ -11,7 +11,7 @@ import {
 
 //api
 import { fetchData } from "../utils/utils";
-import { postSignup } from "../services/api/signupApi"
+import { postSignup } from "7emezzo-gs/dist/services/api/signupApi"
 
 //components
 import CustomInputBox from "../CustomInputBox";

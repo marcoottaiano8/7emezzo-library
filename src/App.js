@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import { View } from "react-native";
-import { signinApi } from "./components/services/api/loginApi";
 import { fetchData } from "./components/utils/utils";
 import Login from "./components/screens/Login";
 import Signup from "./components/screens/Signup";
@@ -14,7 +13,7 @@ function App() {
   return (
     <Provider store={store}>
       <View>
-        <Ranking />
+        <Login />
       </View>
     </Provider>
   );
