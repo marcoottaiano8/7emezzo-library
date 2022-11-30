@@ -20,6 +20,7 @@ export default function CustomModal(props) {
                 <Text style={mobile.closeButtonText}>x</Text>
               </View>
             </TouchableOpacity>
+            {props.children}
           </View>
         </View>
       </Modal>
