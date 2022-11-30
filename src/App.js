@@ -1,5 +1,6 @@
 import React from "react";
 import { View } from "react-native";
+import { fetchData } from "./components/utils/utils";
 import Login from "./components/screens/Login";
 import Signup from "./components/screens/Signup";
 import Home from "./components/screens/Home";

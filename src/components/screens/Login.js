@@ -10,7 +10,7 @@ import {
 
 //api
 import { fetchData, setDataInStorage } from "../utils/utils";
-import { signinApi } from "../services/api/loginApi";
+import { signinApi } from "7emezzo-gs/dist/services/api/loginApi";
 
 //components
 import CustomInputBox from "../CustomInputBox";
