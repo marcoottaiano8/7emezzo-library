@@ -29,8 +29,8 @@ exports.saveUserData = saveUserData;
 var userDuck = (0, _toolkit.createSlice)({
   name: "userDuck",
   initialState: {
-    isLoggedIn: !!(0, _utils.getDataFromStorage)("user") ? (0, _utils.getDataFromStorage)("user").id : false,
-    userData: {}
+    isLoggedIn: undefined,
+    userData: undefined
   },
   reducers: {
     setLoggedStateAction: function setLoggedStateAction(state, action) {

@@ -17,21 +17,61 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 function _iterableToArrayLimit(arr, i) { var _i = null == arr ? null : "undefined" != typeof Symbol && arr[Symbol.iterator] || arr["@@iterator"]; if (null != _i) { var _s, _e, _x, _r, _arr = [], _n = !0, _d = !1; try { if (_x = (_i = _i.call(arr)).next, 0 === i) { if (Object(_i) !== _i) return; _n = !1; } else for (; !(_n = (_s = _x.call(_i)).done) && (_arr.push(_s.value), _arr.length !== i); _n = !0) { ; } } catch (err) { _d = !0, _e = err; } finally { try { if (!_n && null != _i.return && (_r = _i.return(), Object(_r) !== _r)) return; } finally { if (_d) throw _e; } } return _arr; } }
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 var users = [{
-  id: 1,
+  id: 0,
   username: "JustOtto",
   score: 70
 }, {
-  id: 2,
+  id: 1,
   username: "Lotto",
   score: 65
 }, {
-  id: 3,
+  id: 2,
   username: "Daniele",
   score: 50
 }, {
-  id: 4,
+  id: 3,
   username: "Mattia",
   score: 7
+}, {
+  id: 4,
+  username: "Andrea",
+  score: 2
+}, {
+  id: 5,
+  username: "Luca",
+  score: 0
+}, {
+  id: 5,
+  username: "Luca",
+  score: 0
+}, {
+  id: 5,
+  username: "Luca",
+  score: 0
+}, {
+  id: 5,
+  username: "Luca",
+  score: 0
+}, {
+  id: 5,
+  username: "Luca",
+  score: 0
+}, {
+  id: 5,
+  username: "Luca",
+  score: 0
+}, {
+  id: 5,
+  username: "Luca",
+  score: 0
+}, {
+  id: 5,
+  username: "Luca",
+  score: 0
+}, {
+  id: 6,
+  username: "Luca",
+  score: 0
 }];
 function Ranking() {
   var _useResponsive = (0, _useResponsive3.default)(),
@@ -39,27 +79,22 @@ function Ranking() {
     Mobile = _useResponsive2[0],
     Default = _useResponsive2[1],
     isDesktop = _useResponsive2[2];
+  var icons = [require("../assets/images/cup/gold-cup.png"), require("../assets/images/cup/silver-cup.png"), require("../assets/images/cup/bronze-cup.png")];
   var renderItem = function renderItem(_ref) {
     var item = _ref.item;
     return /*#__PURE__*/_react.default.createElement(_reactNative.View, {
-      style: {
-        marginVertical: 5,
-        justifyContent: "space-between",
-        alignItems: "center",
-        flexDirection: "row"
-      }
+      style: mobile.item
     }, /*#__PURE__*/_react.default.createElement(_reactNative.View, {
-      style: {
-        flexDirection: "row",
-        alignItems: "center"
-      }
+      style: mobile.rowView
+    }, item.id > 2 ? /*#__PURE__*/_react.default.createElement(_reactNative.View, {
+      style: [mobile.iconCup, mobile.centerView]
     }, /*#__PURE__*/_react.default.createElement(_reactNative.Text, {
       style: mobile.text
-    }, item.id), /*#__PURE__*/_react.default.createElement(_reactNative.Text, {
-      style: [mobile.text, {
-        fontWeight: "bold",
-        fontSize: 20
-      }]
+    }, item.id)) : /*#__PURE__*/_react.default.createElement(_reactNative.Image, {
+      source: icons[item.id],
+      style: mobile.iconCup
+    }), /*#__PURE__*/_react.default.createElement(_reactNative.Text, {
+      style: [mobile.text, mobile.username]
     }, item.username)), /*#__PURE__*/_react.default.createElement(_reactNative.View, {
       style: {
         flexDirection: "row"
@@ -75,31 +110,54 @@ function Ranking() {
   }, /*#__PURE__*/_react.default.createElement(_reactNative.ImageBackground, {
     source: require("../assets/images/sfondo.jpg"),
     resizeMode: "cover",
-    style: _commonStyle.default.backgroundImg
+    style: [_commonStyle.default.backgroundImg, {
+      justifyContent: "center"
+    }]
   }, /*#__PURE__*/_react.default.createElement(_reactNative.View, {
     style: mobile.table
   }, /*#__PURE__*/_react.default.createElement(_reactNative.ImageBackground, {
     source: require("../assets/images/pokerTable.jpg"),
     resizeMode: "cover",
-    style: {
-      width: 301,
-      height: 651,
-      borderRadius: 20
-    }
+    style: mobile.tableImage
   }, /*#__PURE__*/_react.default.createElement(_reactNative.Text, {
     style: mobile.title
   }, "Classifica"), /*#__PURE__*/_react.default.createElement(_reactNative.View, {
-    style: {
-      marginHorizontal: 30,
-      marginTop: 50
-    }
-  }, /*#__PURE__*/_react.default.createElement(_reactNativeWeb.FlatList, {
+    style: [mobile.line, {
+      marginTop: 20
+    }]
+  }), /*#__PURE__*/_react.default.createElement(_reactNative.ScrollView, {
+    style: mobile.scrollView
+  }, /*#__PURE__*/_react.default.createElement(_reactNative.View, null, /*#__PURE__*/_react.default.createElement(_reactNativeWeb.FlatList, {
     data: users,
     renderItem: renderItem,
     keyExtractor: function keyExtractor(item) {
       return item.id;
     }
-  }))))));
+  }))), /*#__PURE__*/_react.default.createElement(_reactNative.View, {
+    style: [mobile.line, {
+      marginBottom: 10
+    }]
+  }), /*#__PURE__*/_react.default.createElement(_reactNative.View, {
+    style: [mobile.item, {
+      marginHorizontal: 30
+    }]
+  }, /*#__PURE__*/_react.default.createElement(_reactNative.View, {
+    style: mobile.rowView
+  }, /*#__PURE__*/_react.default.createElement(_reactNative.View, {
+    style: [mobile.iconCup, mobile.centerView]
+  }, /*#__PURE__*/_react.default.createElement(_reactNative.Text, {
+    style: mobile.text
+  }, "5")), /*#__PURE__*/_react.default.createElement(_reactNative.Text, {
+    style: [mobile.text, mobile.username]
+  }, "Pippo")), /*#__PURE__*/_react.default.createElement(_reactNative.View, {
+    style: {
+      flexDirection: "row"
+    }
+  }, /*#__PURE__*/_react.default.createElement(_reactNative.Text, {
+    style: mobile.text
+  }, "3 "), /*#__PURE__*/_react.default.createElement(_reactNative.Text, {
+    style: mobile.text
+  }, "pts")))))));
 }
 var mobile = _reactNative.StyleSheet.create({
   table: {
@@ -107,14 +165,28 @@ var mobile = _reactNative.StyleSheet.create({
     backgroundColor: "white",
     width: 300,
     height: 650,
-    marginTop: 40,
     borderRadius: 20,
     overflow: "hidden",
     justifyContent: "center"
   },
+  tableImage: {
+    width: 301,
+    height: 651,
+    borderRadius: 20
+  },
+  scrollView: {
+    paddingHorizontal: 30,
+    marginTop: 30,
+    marginBottom: 20
+  },
+  line: {
+    backgroundColor: "white",
+    height: 1,
+    marginHorizontal: 30
+  },
   text: {
     color: "white",
-    fontSize: 17,
+    fontSize: 20,
     marginHorizontal: 3
   },
   title: {
@@ -123,5 +195,27 @@ var mobile = _reactNative.StyleSheet.create({
     fontSize: 50,
     textAlign: "center",
     fontWeight: "bold"
+  },
+  iconCup: {
+    width: 20,
+    height: 20
+  },
+  centerView: {
+    justifyContent: "center",
+    alignItems: "center"
+  },
+  item: {
+    marginBottom: 20,
+    justifyContent: "space-between",
+    alignItems: "center",
+    flexDirection: "row"
+  },
+  rowView: {
+    flexDirection: "row",
+    alignItems: "center"
+  },
+  username: {
+    fontWeight: "bold",
+    fontSize: 25
   }
 });
