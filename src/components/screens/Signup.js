@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+
 import {
   View,
   Text,
@@ -7,6 +8,12 @@ import {
   Dimensions,
   TouchableOpacity,
 } from "react-native";
+
+//api
+import { fetchData } from "../utils/utils";
+import { postSignup } from "../services/api/signupApi"
+
+//components
 import CustomInputBox from "../CustomInputBox";
 import CustomButton from "../CustomButton";
 import useResponsive from "../utils/useResponsive";
@@ -30,9 +37,21 @@ export default function Signup(props) {
     }
   }
 
-  function checkSignUp() {
-    console.log("registrato");
-    goToLogin();
+  async function checkSignUp() {
+    const obj = {
+      email: email,
+      password: password,
+      username: username
+    }
+    let res = await fetchData(postSignup, obj);
+    if (res.status === 406)
+      console.log(res.status,"Email già presente nel DB")
+    else if (res.status === 500)
+      console.log(res.statu,"Internal server error")
+    else if (res.status === 200) {
+      console.log(res.status)
+      goToLogin()
+    }
   }
 
   function setUsername(e) {
