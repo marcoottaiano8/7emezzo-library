@@ -3,7 +3,8 @@ import { View, Modal, Text, StyleSheet, TouchableOpacity } from "react-native";
 
 export default function CustomModal(props) {
   function closeModal() {
-    if (!!props.callbackClose) props.callbackClose();
+    if (!!props.callbackClose)
+      props.callbackClose();
   }
   return (
     <View style={mobile.centeredView}>

@@ -20,6 +20,18 @@ const commonstyle = StyleSheet.create({
     textAlign: "center",
     fontWeight: "bold",
   },
+  modalTitle: {
+    fontWeight: "bold",
+    fontSize: 25,
+    textAlign: 'center',
+    color: 'white'
+  },
+  modalBody: {
+    marginTop: 20, 
+    fontSize: 20, 
+    color: 'white', 
+    textAlign: 'center'
+  }
 });
 
 export default commonstyle;
