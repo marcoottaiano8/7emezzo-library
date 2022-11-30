@@ -10,7 +10,7 @@ import {
 } from "react-native";
 
 function CustomButton(props) {
-  const [Mobile, Default, isMobile] = useResponsive();
+  const [Mobile, Default, isDesktop] = useResponsive();
 
   const handleClick = () => {
     if (!!props.callback) {
@@ -21,15 +21,15 @@ function CustomButton(props) {
   return (
     <TouchableOpacity
       disabled={props.disable}
-      style={[mobile.button, props.disable && mobile.disable]}
+      style={[
+        mobile.button,
+        props.disable && mobile.disable,
+        isDesktop && desktopStyle.button,
+      ]}
       onPress={handleClick}
     >
       <View>
-        <Text
-          style={
-            props.isDesktop ? [mobile.text, desktopStyle.text] : mobile.text
-          }
-        >
+        <Text style={[mobile.text, isDesktop && desktopStyle.text]}>
           {props.label}
         </Text>
       </View>
@@ -47,7 +47,7 @@ const mobile = StyleSheet.create({
     backgroundColor: "#F10D26",
     border: "none",
     borderRadius: 30,
-    paddingHorizontal: 25,
+    paddingHorizontal: 45,
     paddingVertical: 10,
     marginBottom: 30,
     marginHorizontal: 20,
@@ -65,7 +65,11 @@ const mobile = StyleSheet.create({
 
 const desktopStyle = StyleSheet.create({
   text: {
-    fontSize: 20,
+    fontSize: 25,
+  },
+  button: {
+    width: 400,
+    marginHorizontal: 0,
   },
 });
 

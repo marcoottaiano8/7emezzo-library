@@ -31,7 +31,7 @@ function Signup(props) {
     _useResponsive2 = _slicedToArray(_useResponsive, 3),
     Mobile = _useResponsive2[0],
     Default = _useResponsive2[1],
-    isMobile = _useResponsive2[2];
+    isDesktop = _useResponsive2[2];
   var _useState = (0, _react.useState)({
       disable: true
     }),
@@ -89,7 +89,7 @@ function Signup(props) {
   }, /*#__PURE__*/_react.default.createElement(_reactNative.Text, {
     style: _commonStyle.default.title
   }, "7 e mezzo"), /*#__PURE__*/_react.default.createElement(_reactNative.View, {
-    style: isMobile ? mobile.container : [mobile.container, desktop.container]
+    style: [mobile.container, isDesktop && desktop.container]
   }, /*#__PURE__*/_react.default.createElement(_CustomInputBox.default, {
     placeholder: "Username...",
     callbackChange: setUsername

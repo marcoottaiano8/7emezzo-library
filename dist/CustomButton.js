@@ -19,7 +19,7 @@ function CustomButton(props) {
     _useResponsive2 = _slicedToArray(_useResponsive, 3),
     Mobile = _useResponsive2[0],
     Default = _useResponsive2[1],
-    isMobile = _useResponsive2[2];
+    isDesktop = _useResponsive2[2];
   var handleClick = function handleClick() {
     if (!!props.callback) {
       props.callback();
@@ -27,10 +27,10 @@ function CustomButton(props) {
   };
   return /*#__PURE__*/_react.default.createElement(_reactNative.TouchableOpacity, {
     disabled: props.disable,
-    style: [mobile.button, props.disable && mobile.disable],
+    style: [mobile.button, props.disable && mobile.disable, isDesktop && desktopStyle.button],
     onPress: handleClick
   }, /*#__PURE__*/_react.default.createElement(_reactNative.View, null, /*#__PURE__*/_react.default.createElement(_reactNative.Text, {
-    style: props.isDesktop ? [mobile.text, desktopStyle.text] : mobile.text
+    style: [mobile.text, isDesktop && desktopStyle.text]
   }, props.label)));
 }
 CustomButton.defaultProps = {
@@ -42,23 +42,28 @@ var mobile = _reactNative.StyleSheet.create({
     backgroundColor: "#F10D26",
     border: "none",
     borderRadius: 30,
-    paddingHorizontal: 35,
-    paddingVertical: 15,
-    marginBottom: 30
+    paddingHorizontal: 45,
+    paddingVertical: 10,
+    marginBottom: 30,
+    marginHorizontal: 20
   },
   disable: {
     opacity: 0.5
   },
   text: {
     fontWeight: "bold",
-    fontSize: 15,
+    fontSize: 20,
     color: "white",
     textAlign: "center"
   }
 });
 var desktopStyle = _reactNative.StyleSheet.create({
   text: {
-    fontSize: 20
+    fontSize: 25
+  },
+  button: {
+    width: 400,
+    marginHorizontal: 0
   }
 });
 var _default = CustomButton;

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   View,
   ImageBackground,
@@ -6,16 +6,29 @@ import {
   Dimensions,
   Text,
   Image,
+  TouchableOpacity,
 } from "react-native";
+import { Modal } from "react-native-web";
 import CustomButton from "../CustomButton";
+import CustomModal from "../CustomModal";
 import commonStyle from "../style/commonStyle";
 import useResponsive from "../utils/useResponsive";
 
 export default function Home() {
   const [Mobile, Default, isDesktop] = useResponsive();
 
-  function log(e) {
-    console.log("test");
+  const [state, setState] = useState({
+    modal: false,
+  });
+
+  function setModal() {
+    setState({
+      ...state,
+      modal: !state.modal,
+    });
+  }
+  function goToRanking() {
+    console.log("classifica");
   }
 
   return (
@@ -25,15 +38,22 @@ export default function Home() {
         resizeMode="cover"
         style={commonStyle.backgroundImg}
       >
-        <Text style={commonStyle.title}>7 e mezzo</Text>
+        <Text style={commonStyle.title}>7 e ½</Text>
         <View style={[mobile.container, isDesktop && desktop.container]}>
-          <Image
-            source={require("../assets/images/ironman.gif")}
-            style={mobile.image}
-          />
-          <CustomButton label={"Gioca"} callback={log} />
-          <CustomButton label={"Classifica"} callback={log} />
+          <View style={{ alignItems: "center" }}>
+            <Image
+              source={require("../assets/images/ironman.gif")}
+              style={mobile.image}
+            />
+          </View>
+          <CustomButton label={"Partita veloce"} callback={setModal} />
+          <CustomButton label={"Crea lobby"} callback={setModal} />
+          <CustomButton label={"Classifica"} callback={goToRanking} />
         </View>
+        <CustomModal
+          visible={state.modal}
+          callbackClose={setModal}
+        ></CustomModal>
       </ImageBackground>
     </View>
   );
@@ -48,7 +68,6 @@ const mobile = StyleSheet.create({
   image: {
     height: 200,
     width: 200,
-    marginHorizontal: "auto",
   },
 });
 
