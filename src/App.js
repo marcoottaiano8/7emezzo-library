@@ -12,7 +12,7 @@ function App() {
   
   return (
     <View>
-      <Ranking />
+      <Login />
     </View>
   );
 }

@@ -18,25 +18,22 @@ import CustomInputBox from "../CustomInputBox";
 import CustomButton from "../CustomButton";
 import useResponsive from "../utils/useResponsive";
 import commonstyle from "../style/commonStyle";
+import CustomModal from "../CustomModal"
 
 let username, email, password;
 
 export default function Signup(props) {
   const [Mobile, Default, isDesktop] = useResponsive();
+
+  //state
   const [state, setState] = useState({
     disable: true,
+    modalVisible: false,
+    modalTitle: null,
+    modalBody: null
   });
 
-  function log(e) {
-    console.log("test");
-  }
-
-  function goToLogin() {
-    if (!!props.goToLogin) {
-      props.goToLogin();
-    }
-  }
-
+  //registrazione
   async function checkSignUp() {
     const obj = {
       email: email,
@@ -44,16 +41,42 @@ export default function Signup(props) {
       username: username
     }
     let res = await fetchData(postSignup, obj);
-    if (res.status === 406)
-      console.log(res.status,"Email già presente nel DB")
-    else if (res.status === 500)
-      console.log(res.statu,"Internal server error")
+    let modalTitle = ""
+    let modalBody = ""
+    if (res.status === 406){
+      modalTitle = "ERRORE"
+      modalBody = "Email già presente nel DB"
+    }
+    else if(res.status === 400){
+      modalTitle = "ERRORE"
+      modalBody = "Errore nell'inserimento dell'email o della password"
+    }
+    else if (res.status === 500){
+      modalTitle="ERRORE"
+      modalBody = "Errore interno del server"
+    }
     else if (res.status === 200) {
-      console.log(res.status)
+      modalTitle=""
+      modalBody= "Registrazione avvenuta con successo"
       goToLogin()
     }
+    setState({
+      ...state,
+      modalVisible: !state.modalVisible,
+      modalTitle: modalTitle,
+      modalBody: modalBody
+    })
   }
 
+  //funxione per chiudere il modale
+  function closeModal (){
+    setState({
+      ...state,
+      modalVisible: !state.modalVisible
+    })
+  }
+
+  //setto lo username
   function setUsername(e) {
     username = e;
     let disable = true;
@@ -66,6 +89,7 @@ export default function Signup(props) {
     });
   }
 
+  //etto l'email
   function setEmail(e) {
     email = e;
     let disable = true;
@@ -78,6 +102,7 @@ export default function Signup(props) {
     });
   }
 
+  //setto la password
   function setPassword(e) {
     password = e;
     let disable = true;
@@ -88,6 +113,13 @@ export default function Signup(props) {
       ...state,
       disable: disable,
     });
+  }
+
+  //navigo alla pagina login
+  function goToLogin() {
+    if (!!props.goToLogin) {
+      props.goToLogin();
+    }
   }
 
   return (
@@ -116,6 +148,14 @@ export default function Signup(props) {
           <TouchableOpacity style={mobile.subtitle} onPress={goToLogin}>
             <Text style={mobile.text}>Hai giá un account? Accedi</Text>
           </TouchableOpacity>
+
+          <CustomModal
+            visible={state.modalVisible}
+            callbackClose={closeModal}
+          >
+            <Text style={commonstyle.modalTitle}>{state.modalTitle}</Text>
+            <Text style={commonstyle.modalBody}>{state.modalBody}</Text>
+          </CustomModal>
         </View>
       </ImageBackground>
     </View>
@@ -137,7 +177,7 @@ const mobile = StyleSheet.create({
     fontWeight: "bold",
     color: "white",
     textAlign: "center",
-  },
+  }
 });
 
 const desktop = StyleSheet.create({
