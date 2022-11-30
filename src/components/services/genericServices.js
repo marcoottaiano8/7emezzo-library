@@ -19,7 +19,7 @@ const axiosInstanceToken = axios.create({
 axiosInstanceToken.interceptors.request.use(
   (config) => {
     //si puo usare qualsisi storage
-    const token = getDataFromStorage("onlusToken");
+    const token = getDataFromStorage("token");
     if (token) {
       config.headers = {
         Authorization: `Bearer ${token}`,
@@ -49,8 +49,8 @@ axiosInstanceToken.interceptors.response.use(
       const updateToken = await updateAuthTokenApi();
       if (updateToken.status === 200) {
         const { token, refreshToken } = updateToken.data;
-        setDataInStorage("onlusToken", token);
-        setDataInStorage("onlusRefreshToken", refreshToken);
+        setDataInStorage("token", token);
+        setDataInStorage("refreshToken", refreshToken);
         //riprova a fare la chiamata avendo il token aggiornato nello storage
         return axiosInstanceToken(originalRequest);
       }
