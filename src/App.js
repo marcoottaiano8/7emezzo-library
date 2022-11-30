@@ -7,13 +7,16 @@ import Signup from "./components/screens/Signup";
 import Home from "./components/screens/Home";
 import Game from "./components/screens/Game";
 import Ranking from "./components/screens/Ranking";
+import store from "./components/store";
+import { Provider } from "react-redux";
 
 function App() {
-  
   return (
-    <View>
-      <Login />
-    </View>
+    <Provider store={store}>
+      <View>
+        <Login />
+      </View>
+    </Provider>
   );
 }
 

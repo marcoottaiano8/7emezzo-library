@@ -78,7 +78,7 @@ export default function Ranking() {
       <ImageBackground
         source={require("../assets/images/sfondo.jpg")}
         resizeMode="cover"
-        style={commonStyle.backgroundImg}
+        style={mobile.backgroundImg}
       >
         <View style={mobile.table}>
           <ImageBackground
@@ -111,12 +111,17 @@ export default function Ranking() {
 }
 
 const mobile = StyleSheet.create({
+  backgroundImg: {
+    height: Dimensions.get("window").height,
+    width: Dimensions.get("window").width,
+    alignItems: "center",
+    justifyContent: "center",
+  },
   table: {
     alignItems: "center",
     backgroundColor: "white",
     width: 300,
     height: 650,
-    marginTop: 40,
     borderRadius: 20,
     overflow: "hidden",
     justifyContent: "center",

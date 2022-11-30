@@ -25,6 +25,18 @@ var commonstyle = _reactNative.StyleSheet.create({
     fontSize: 50,
     textAlign: "center",
     fontWeight: "bold"
+  },
+  modalTitle: {
+    fontWeight: "bold",
+    fontSize: 25,
+    textAlign: 'center',
+    color: 'white'
+  },
+  modalBody: {
+    marginTop: 20,
+    fontSize: 20,
+    color: 'white',
+    textAlign: 'center'
   }
 });
 var _default = commonstyle;

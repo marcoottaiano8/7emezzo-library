@@ -1,15 +1,24 @@
 "use strict";
 
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = Home;
-var _react = _interopRequireDefault(require("react"));
+var _react = _interopRequireWildcard(require("react"));
 var _reactNative = require("react-native");
 var _CustomButton = _interopRequireDefault(require("../CustomButton"));
+var _CustomModal = _interopRequireDefault(require("../CustomModal"));
 var _commonStyle = _interopRequireDefault(require("../style/commonStyle"));
 var _useResponsive3 = _interopRequireDefault(require("../utils/useResponsive"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
+function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || _typeof(obj) !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
+function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
+function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
@@ -22,8 +31,25 @@ function Home() {
     Mobile = _useResponsive2[0],
     Default = _useResponsive2[1],
     isDesktop = _useResponsive2[2];
-  function log(e) {
-    console.log("test");
+  var _useState = (0, _react.useState)({
+      fastGameModal: false,
+      createLobbyModal: false
+    }),
+    _useState2 = _slicedToArray(_useState, 2),
+    state = _useState2[0],
+    setState = _useState2[1];
+  function setFastGameModal() {
+    setState(_objectSpread(_objectSpread({}, state), {}, {
+      fastGameModal: !state.fastGameModal
+    }));
+  }
+  function setCreateLobbyModal() {
+    setState(_objectSpread(_objectSpread({}, state), {}, {
+      createLobbyModal: !state.createLobbyModal
+    }));
+  }
+  function goToRanking() {
+    console.log("classifica");
   }
   return /*#__PURE__*/_react.default.createElement(_reactNative.View, {
     style: _commonStyle.default.mainContainer
@@ -33,7 +59,7 @@ function Home() {
     style: _commonStyle.default.backgroundImg
   }, /*#__PURE__*/_react.default.createElement(_reactNative.Text, {
     style: _commonStyle.default.title
-  }, "7 e mezzo"), /*#__PURE__*/_react.default.createElement(_reactNative.View, {
+  }, "7 e \xBD"), /*#__PURE__*/_react.default.createElement(_reactNative.View, {
     style: [mobile.container, isDesktop && desktop.container]
   }, /*#__PURE__*/_react.default.createElement(_reactNative.View, {
     style: {
@@ -43,12 +69,40 @@ function Home() {
     source: require("../assets/images/ironman.gif"),
     style: mobile.image
   })), /*#__PURE__*/_react.default.createElement(_CustomButton.default, {
-    label: "Gioca",
-    callback: log
+    label: "Partita veloce",
+    callback: setFastGameModal
+  }), /*#__PURE__*/_react.default.createElement(_CustomButton.default, {
+    label: "Crea lobby",
+    callback: setCreateLobbyModal
   }), /*#__PURE__*/_react.default.createElement(_CustomButton.default, {
     label: "Classifica",
-    callback: log
-  }))));
+    callback: goToRanking
+  })), /*#__PURE__*/_react.default.createElement(_CustomModal.default, {
+    visible: state.fastGameModal,
+    callbackClose: setFastGameModal
+  }, /*#__PURE__*/_react.default.createElement(_reactNative.Text, {
+    style: [mobile.text, mobile.title]
+  }, "Lobby"), /*#__PURE__*/_react.default.createElement(_reactNative.View, {
+    style: mobile.modalContainer
+  }, /*#__PURE__*/_react.default.createElement(_reactNative.Text, {
+    style: mobile.text
+  }, "In attesa di altri giocatori..."))), /*#__PURE__*/_react.default.createElement(_CustomModal.default, {
+    visible: state.createLobbyModal,
+    callbackClose: setCreateLobbyModal
+  }, /*#__PURE__*/_react.default.createElement(_reactNative.Text, {
+    style: [mobile.text, mobile.title]
+  }, "Lobby"), /*#__PURE__*/_react.default.createElement(_reactNative.View, {
+    style: mobile.modalContainer
+  }, /*#__PURE__*/_react.default.createElement(_reactNative.Text, {
+    style: mobile.text
+  }, "In attesa di altri giocatori..."), /*#__PURE__*/_react.default.createElement(_reactNative.View, {
+    style: {
+      marginTop: 40,
+      marginBottom: -30
+    }
+  }, /*#__PURE__*/_react.default.createElement(_CustomButton.default, {
+    label: "Inizia partita"
+  }))))));
 }
 var mobile = _reactNative.StyleSheet.create({
   container: {
@@ -59,6 +113,18 @@ var mobile = _reactNative.StyleSheet.create({
   image: {
     height: 200,
     width: 200
+  },
+  modalContainer: {
+    marginTop: 20
+  },
+  title: {
+    fontSize: 35,
+    fontWeight: "bold",
+    textAlign: "center"
+  },
+  text: {
+    fontSize: 20,
+    color: "white"
   }
 });
 var desktop = _reactNative.StyleSheet.create({

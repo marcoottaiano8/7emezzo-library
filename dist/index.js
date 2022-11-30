@@ -21,6 +21,12 @@ Object.defineProperty(exports, "Login", {
     return _Login.default;
   }
 });
+Object.defineProperty(exports, "Ranking", {
+  enumerable: true,
+  get: function get() {
+    return _Ranking.default;
+  }
+});
 Object.defineProperty(exports, "Signup", {
   enumerable: true,
   get: function get() {
@@ -33,9 +39,24 @@ Object.defineProperty(exports, "Utils", {
     return _utils.default;
   }
 });
+Object.defineProperty(exports, "loginDuck", {
+  enumerable: true,
+  get: function get() {
+    return _loginDuck.default;
+  }
+});
+Object.defineProperty(exports, "userDuck", {
+  enumerable: true,
+  get: function get() {
+    return _userDuck.default;
+  }
+});
 var _Home = _interopRequireDefault(require("./screens/Home"));
 var _utils = _interopRequireDefault(require("./utils/utils"));
 var _Login = _interopRequireDefault(require("./screens/Login"));
 var _Signup = _interopRequireDefault(require("./screens/Signup"));
 var _Game = _interopRequireDefault(require("./screens/Game"));
+var _Ranking = _interopRequireDefault(require("./screens/Ranking"));
+var _loginDuck = _interopRequireDefault(require("./redux/loginDuck"));
+var _userDuck = _interopRequireDefault(require("./redux/userDuck"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
