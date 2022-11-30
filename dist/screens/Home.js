@@ -21,7 +21,7 @@ function Home() {
     _useResponsive2 = _slicedToArray(_useResponsive, 3),
     Mobile = _useResponsive2[0],
     Default = _useResponsive2[1],
-    isMobile = _useResponsive2[2];
+    isDesktop = _useResponsive2[2];
   function log(e) {
     console.log("test");
   }
@@ -34,11 +34,15 @@ function Home() {
   }, /*#__PURE__*/_react.default.createElement(_reactNative.Text, {
     style: _commonStyle.default.title
   }, "7 e mezzo"), /*#__PURE__*/_react.default.createElement(_reactNative.View, {
-    style: isMobile ? mobile.container : [mobile.container, desktop.container]
+    style: [mobile.container, isDesktop && desktop.container]
+  }, /*#__PURE__*/_react.default.createElement(_reactNative.View, {
+    style: {
+      alignItems: "center"
+    }
   }, /*#__PURE__*/_react.default.createElement(_reactNative.Image, {
     source: require("../assets/images/ironman.gif"),
     style: mobile.image
-  }), /*#__PURE__*/_react.default.createElement(_CustomButton.default, {
+  })), /*#__PURE__*/_react.default.createElement(_CustomButton.default, {
     label: "Gioca",
     callback: log
   }), /*#__PURE__*/_react.default.createElement(_CustomButton.default, {
@@ -54,8 +58,7 @@ var mobile = _reactNative.StyleSheet.create({
   },
   image: {
     height: 200,
-    width: 200,
-    marginHorizontal: "auto"
+    width: 200
   }
 });
 var desktop = _reactNative.StyleSheet.create({

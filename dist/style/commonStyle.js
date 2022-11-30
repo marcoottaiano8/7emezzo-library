@@ -10,9 +10,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var commonstyle = _reactNative.StyleSheet.create({
   mainContainer: {
     flex: 1,
-    width: "100%",
-    height: "100%",
-    minHeight: _reactNative.Dimensions.get("window").height
+    width: _reactNative.Dimensions.get("window").width,
+    height: _reactNative.Dimensions.get("window").height
   },
   backgroundImg: {
     height: _reactNative.Dimensions.get("window").height,
