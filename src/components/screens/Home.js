@@ -8,7 +8,6 @@ import {
   Image,
   TouchableOpacity,
 } from "react-native";
-import { Modal } from "react-native-web";
 import CustomButton from "../CustomButton";
 import CustomModal from "../CustomModal";
 import commonStyle from "../style/commonStyle";
