@@ -8,8 +8,9 @@ import {
   Image,
   TouchableOpacity,
   ScrollView,
+  FlatList,
 } from "react-native";
-import { FlatList } from "react-native-web";
+import CustomButton from "../CustomButton";
 import commonStyle from "../style/commonStyle";
 import useResponsive from "../utils/useResponsive";
 
@@ -44,49 +45,9 @@ const users = [
     username: "Luca",
     score: 0,
   },
-  {
-    id: 5,
-    username: "Luca",
-    score: 0,
-  },
-  {
-    id: 5,
-    username: "Luca",
-    score: 0,
-  },
-  {
-    id: 5,
-    username: "Luca",
-    score: 0,
-  },
-  {
-    id: 5,
-    username: "Luca",
-    score: 0,
-  },
-  {
-    id: 5,
-    username: "Luca",
-    score: 0,
-  },
-  {
-    id: 5,
-    username: "Luca",
-    score: 0,
-  },
-  {
-    id: 5,
-    username: "Luca",
-    score: 0,
-  },
-  {
-    id: 6,
-    username: "Luca",
-    score: 0,
-  },
 ];
 
-export default function Ranking() {
+export default function Ranking(props) {
   const [Mobile, Default, isDesktop] = useResponsive();
 
   const icons = [
@@ -94,6 +55,10 @@ export default function Ranking() {
     require("../assets/images/cup/silver-cup.png"),
     require("../assets/images/cup/bronze-cup.png"),
   ];
+
+  function goToHome() {
+    if (!!props.goToHome) props.goToHome();
+  }
 
   const renderItem = ({ item }) => (
     <View style={mobile.item}>
@@ -153,6 +118,7 @@ export default function Ranking() {
             </View>
           </ImageBackground>
         </View>
+        <CustomButton label={"Home"} callback={goToHome} />
       </ImageBackground>
     </View>
   );

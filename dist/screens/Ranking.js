@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.default = Ranking;
 var _react = _interopRequireDefault(require("react"));
 var _reactNative = require("react-native");
-var _reactNativeWeb = require("react-native-web");
+var _CustomButton = _interopRequireDefault(require("../CustomButton"));
 var _commonStyle = _interopRequireDefault(require("../style/commonStyle"));
 var _useResponsive3 = _interopRequireDefault(require("../utils/useResponsive"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -40,46 +40,17 @@ var users = [{
   id: 5,
   username: "Luca",
   score: 0
-}, {
-  id: 5,
-  username: "Luca",
-  score: 0
-}, {
-  id: 5,
-  username: "Luca",
-  score: 0
-}, {
-  id: 5,
-  username: "Luca",
-  score: 0
-}, {
-  id: 5,
-  username: "Luca",
-  score: 0
-}, {
-  id: 5,
-  username: "Luca",
-  score: 0
-}, {
-  id: 5,
-  username: "Luca",
-  score: 0
-}, {
-  id: 5,
-  username: "Luca",
-  score: 0
-}, {
-  id: 6,
-  username: "Luca",
-  score: 0
 }];
-function Ranking() {
+function Ranking(props) {
   var _useResponsive = (0, _useResponsive3.default)(),
     _useResponsive2 = _slicedToArray(_useResponsive, 3),
     Mobile = _useResponsive2[0],
     Default = _useResponsive2[1],
     isDesktop = _useResponsive2[2];
   var icons = [require("../assets/images/cup/gold-cup.png"), require("../assets/images/cup/silver-cup.png"), require("../assets/images/cup/bronze-cup.png")];
+  function goToHome() {
+    if (!!props.goToHome) props.goToHome();
+  }
   var renderItem = function renderItem(_ref) {
     var item = _ref.item;
     return /*#__PURE__*/_react.default.createElement(_reactNative.View, {
@@ -127,7 +98,7 @@ function Ranking() {
     }]
   }), /*#__PURE__*/_react.default.createElement(_reactNative.ScrollView, {
     style: mobile.scrollView
-  }, /*#__PURE__*/_react.default.createElement(_reactNative.View, null, /*#__PURE__*/_react.default.createElement(_reactNativeWeb.FlatList, {
+  }, /*#__PURE__*/_react.default.createElement(_reactNative.View, null, /*#__PURE__*/_react.default.createElement(_reactNative.FlatList, {
     data: users,
     renderItem: renderItem,
     keyExtractor: function keyExtractor(item) {
@@ -157,7 +128,10 @@ function Ranking() {
     style: mobile.text
   }, "3 "), /*#__PURE__*/_react.default.createElement(_reactNative.Text, {
     style: mobile.text
-  }, "pts")))))));
+  }, "pts"))))), /*#__PURE__*/_react.default.createElement(_CustomButton.default, {
+    label: "Home",
+    callback: goToHome
+  })));
 }
 var mobile = _reactNative.StyleSheet.create({
   table: {

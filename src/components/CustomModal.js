@@ -3,8 +3,7 @@ import { View, Modal, Text, StyleSheet, TouchableOpacity } from "react-native";
 
 export default function CustomModal(props) {
   function closeModal() {
-    if (!!props.callbackClose)
-      props.callbackClose();
+    if (!!props.callbackClose) props.callbackClose();
   }
   return (
     <View style={mobile.centeredView}>
@@ -42,7 +41,7 @@ const mobile = StyleSheet.create({
   },
   modalView: {
     margin: 20,
-    backgroundColor: "#F10D26",
+    backgroundColor: "#8F0503",
     borderColor: "white",
     borderWidth: 3,
     borderRadius: 20,
@@ -68,7 +67,7 @@ const mobile = StyleSheet.create({
     // backgroundColor: "black",
     height: 35,
     width: 35,
-    backgroundColor: "#F10D26",
+    backgroundColor: "#8F0503",
     alignItems: "center",
     justifyContent: "center",
   },

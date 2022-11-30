@@ -23,7 +23,7 @@ function _updateAuthTokenApi() {
           case 0:
             _context.next = 2;
             return (0, _genericServices.postApiNoAuth)("updateAuthToken", {
-              refreshToken: (0, _utils.getDataFromStorage)("onlusRefreshToken")
+              refreshToken: (0, _utils.getDataFromStorage)("refreshToken")
             });
           case 2:
             return _context.abrupt("return", _context.sent);

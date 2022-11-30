@@ -10,24 +10,23 @@ import {
 
 //api
 import { fetchData, setDataInStorage } from "../utils/utils";
-import { signinApi } from "../services/api/loginApi"
+import { signinApi } from "../services/api/loginApi";
 
 //components
 import CustomInputBox from "../CustomInputBox";
 import CustomButton from "../CustomButton";
 import useResponsive from "../utils/useResponsive";
 import commonStyle from "../style/commonStyle";
-import CustomModal from "../CustomModal"
+import CustomModal from "../CustomModal";
 
 //redux
 import { useDispatch } from "react-redux";
 import { setLogin } from "../redux/loginDuck";
-import { setLoggedState, saveUserData } from "../redux/userDuck"
+import { setLoggedState, saveUserData } from "../redux/userDuck";
 
 let email, password;
 
 export default function Login(props) {
-
   const dispatch = useDispatch();
   const [Mobile, Default, isDesktop] = useResponsive();
   //state
@@ -35,7 +34,7 @@ export default function Login(props) {
     disable: true,
     modalVisible: false,
     modalTitle: null,
-    modalBody: null
+    modalBody: null,
   });
 
   //login
@@ -43,47 +42,48 @@ export default function Login(props) {
     const obj = {
       email: email,
       password: password,
-    }
+    };
     let res = await fetchData(signinApi, obj);
-    let modalTitle = ""
-    let modalBody = ""
-    if (res.status === 401){
-      modalTitle = "ERRORE"
-      modalBody = "Email o password errati"
-    }
-    else if (res.status === 500){
-      modalTitle="ERRORE"
-      modalBody = "Errore interno del server"
-    }
-    else if (res.status === 200) {
-      modalTitle=""
-      modalBody= "Login avvenuto con successo"
+    let modalVisible = false;
+    let modalTitle = "";
+    let modalBody = "";
+    if (res.status === 401) {
+      modalTitle = "ERRORE";
+      modalBody = "Email o password errati";
+      modalVisible = true;
+    } else if (res.status === 500) {
+      modalTitle = "ERRORE";
+      modalBody = "Errore interno del server";
+      modalVisible = true;
+    } else if (res.status === 200) {
+      modalTitle = "";
+      modalBody = "Login avvenuto con successo";
 
       setDataInStorage("token", res.data.token);
       setDataInStorage("refreshToken", res.data.refreshToken);
       setDataInStorage("user", JSON.stringify(res.data));
       setDataInStorage("userLoggedIn", JSON.stringify(true));
-      
-      dispatch(setLogin({ loginToken: true }))
-      dispatch(setLoggedState({isLoggedIn : true}))
-      dispatch(saveUserData({userData: res.data}))
 
-      goToHome()
+      dispatch(setLogin({ loginToken: true }));
+      dispatch(setLoggedState({ isLoggedIn: true }));
+      dispatch(saveUserData({ userData: res.data }));
+
+      goToHome();
     }
     setState({
       ...state,
-      modalVisible: !state.modalVisible,
+      modalVisible: modalVisible,
       modalTitle: modalTitle,
-      modalBody: modalBody
-    })
+      modalBody: modalBody,
+    });
   }
 
   //funzione per chiudere il modale
-  function closeModal (){
+  function closeModal() {
     setState({
       ...state,
-      modalVisible: !state.modalVisible
-    })
+      modalVisible: !state.modalVisible,
+    });
   }
 
   //setto l'email
@@ -120,9 +120,8 @@ export default function Login(props) {
   }
 
   //navigo alla pagina home
-  function goToHome(){
-    if(!!props.goToHome)
-      props.goToHome()
+  function goToHome() {
+    if (!!props.goToHome) props.goToHome();
   }
 
   return (
@@ -148,10 +147,7 @@ export default function Login(props) {
             <Text style={mobile.text}>Non hai un account? Registrati</Text>
           </TouchableOpacity>
 
-          <CustomModal
-            visible={state.modalVisible}
-            callbackClose={closeModal}
-          >
+          <CustomModal visible={state.modalVisible} callbackClose={closeModal}>
             <Text style={commonStyle.modalTitle}>{state.modalTitle}</Text>
             <Text style={commonStyle.modalBody}>{state.modalBody}</Text>
           </CustomModal>

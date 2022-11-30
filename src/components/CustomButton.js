@@ -44,7 +44,7 @@ CustomButton.defaultProps = {
 
 const mobile = StyleSheet.create({
   button: {
-    backgroundColor: "#F10D26",
+    backgroundColor: "#8F0503",
     border: "none",
     borderRadius: 30,
     paddingHorizontal: 45,

@@ -59,7 +59,7 @@ function Login(props) {
   } //funzione per chiudere il modale
   function _checkLogin() {
     _checkLogin = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
-      var obj, res, modalTitle, modalBody;
+      var obj, res, modalVisible, modalTitle, modalBody;
       return _regeneratorRuntime().wrap(function _callee$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
@@ -72,14 +72,17 @@ function Login(props) {
               return (0, _utils.fetchData)(_loginApi.signinApi, obj);
             case 3:
               res = _context.sent;
+              modalVisible = false;
               modalTitle = "";
               modalBody = "";
               if (res.status === 401) {
                 modalTitle = "ERRORE";
                 modalBody = "Email o password errati";
+                modalVisible = true;
               } else if (res.status === 500) {
                 modalTitle = "ERRORE";
                 modalBody = "Errore interno del server";
+                modalVisible = true;
               } else if (res.status === 200) {
                 modalTitle = "";
                 modalBody = "Login avvenuto con successo";
@@ -99,11 +102,11 @@ function Login(props) {
                 goToHome();
               }
               setState(_objectSpread(_objectSpread({}, state), {}, {
-                modalVisible: !state.modalVisible,
+                modalVisible: modalVisible,
                 modalTitle: modalTitle,
                 modalBody: modalBody
               }));
-            case 8:
+            case 9:
             case "end":
               return _context.stop();
           }

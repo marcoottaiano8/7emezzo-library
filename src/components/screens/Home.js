@@ -13,7 +13,7 @@ import CustomModal from "../CustomModal";
 import commonStyle from "../style/commonStyle";
 import useResponsive from "../utils/useResponsive";
 
-export default function Home() {
+export default function Home(props) {
   const [Mobile, Default, isDesktop] = useResponsive();
 
   const [state, setState] = useState({
@@ -35,7 +35,7 @@ export default function Home() {
     });
   }
   function goToRanking() {
-    console.log("classifica");
+    if (!!props.goToRanking) props.goToRanking();
   }
 
   return (

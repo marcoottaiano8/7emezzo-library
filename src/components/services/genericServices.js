@@ -16,49 +16,49 @@ const axiosInstanceToken = axios.create({
 });
 
 //intercetta le richieste con autenticazione, controlla nello storage se esiste il token e lo inserisce nell'header,
-axiosInstanceToken.interceptors.request.use(
-  (config) => {
-    //si puo usare qualsisi storage
-    const token = getDataFromStorage("token");
-    if (token) {
-      config.headers = {
-        Authorization: `Bearer ${token}`,
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      };
-    }
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  }
-);
+// axiosInstanceToken.interceptors.request.use(
+//   (config) => {
+//     //si puo usare qualsisi storage
+//     const token = getDataFromStorage("token");
+//     if (token) {
+//       config.headers = {
+//         Authorization: `Bearer ${token}`,
+//         Accept: "application/json",
+//         "Content-Type": "application/json",
+//       };
+//     }
+//     return config;
+//   },
+//   (error) => {
+//     return Promise.reject(error);
+//   }
+// );
 
-//intercetta la risposta
-axiosInstanceToken.interceptors.response.use(
-  //se positiva invia la risposta
-  function (response) {
-    return response;
-  },
-  //se con errore
-  async function (error) {
-    const originalRequest = error.config;
-    //se l'errore è 401 usa il refresh Token per ricevere il nuovo token
-    if (error.response.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true;
-      const updateToken = await updateAuthTokenApi();
-      if (updateToken.status === 200) {
-        const { token, refreshToken } = updateToken.data;
-        setDataInStorage("token", token);
-        setDataInStorage("refreshToken", refreshToken);
-        //riprova a fare la chiamata avendo il token aggiornato nello storage
-        return axiosInstanceToken(originalRequest);
-      }
-    }
-    //qui gestire altri errori 403, 404, 500
-    return Promise.reject(error);
-  }
-);
+// //intercetta la risposta
+// axiosInstanceToken.interceptors.response.use(
+//   //se positiva invia la risposta
+//   function (response) {
+//     return response;
+//   },
+//   //se con errore
+//   async function (error) {
+//     const originalRequest = error.config;
+//     //se l'errore è 401 usa il refresh Token per ricevere il nuovo token
+//     if (error.response.status === 401 && !originalRequest._retry) {
+//       originalRequest._retry = true;
+//       const updateToken = await updateAuthTokenApi();
+//       if (updateToken.status === 200) {
+//         const { token, refreshToken } = updateToken.data;
+//         setDataInStorage("token", token);
+//         setDataInStorage("refreshToken", refreshToken);
+//         //riprova a fare la chiamata avendo il token aggiornato nello storage
+//         return axiosInstanceToken(originalRequest);
+//       }
+//     }
+//     //qui gestire altri errori 403, 404, 500
+//     return Promise.reject(error);
+//   }
+// );
 
 export async function responseApi(response) {
   return {

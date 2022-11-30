@@ -43,7 +43,7 @@ var mobile = _reactNative.StyleSheet.create({
   },
   modalView: {
     margin: 20,
-    backgroundColor: "#F10D26",
+    backgroundColor: "#8F0503",
     borderColor: "white",
     borderWidth: 3,
     borderRadius: 20,
@@ -69,7 +69,7 @@ var mobile = _reactNative.StyleSheet.create({
     // backgroundColor: "black",
     height: 35,
     width: 35,
-    backgroundColor: "#F10D26",
+    backgroundColor: "#8F0503",
     alignItems: "center",
     justifyContent: "center"
   },
