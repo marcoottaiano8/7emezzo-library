@@ -96,7 +96,7 @@ export default function Home(props) {
     let res = await fetchData(deleteLobby);
     console.log(res);
     ws.send(JSON.stringify({ method: "quitLobby", idLobby: idLobby }));
-    
+
     setState({
       ...state,
       fastGameModal: !state.fastGameModal,
@@ -106,6 +106,11 @@ export default function Home(props) {
   //vai alla classifica
   function goToRanking() {
     if (!!props.goToRanking) props.goToRanking();
+  }
+
+  //inizia la partita
+  function startMatch() {
+    ws.send(JSON.stringify({ user_id: user.id, method: "startMatch" }));
   }
 
   return (
@@ -138,7 +143,7 @@ export default function Home(props) {
                 marginBottom: -30,
               }}
             >
-              <CustomButton label="Inizia partita" />
+              <CustomButton label="Inizia partita" callback={startMatch} />
             </View>
           </View>
         </CustomModal>
