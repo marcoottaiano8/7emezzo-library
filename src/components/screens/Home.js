@@ -60,12 +60,15 @@ export default function Home(props) {
       idLobby = JSON.parse(e.data).idLobby;
       console.log(idLobby);
     };
+    ws.onclose = () => {
+      console.log("DISCONNESSO");
+    };
   }
 
   //partita veloce
   async function setFastGameModal() {
     let message = "";
-    let res = await fetchData(postLobby);
+    let res = await fetchData(putLobby, 95);
     if (res.status !== 200) message = "Errore del server";
     else {
       message = "In attesa di altri giocatori...";
