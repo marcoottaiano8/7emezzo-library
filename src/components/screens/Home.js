@@ -19,7 +19,7 @@ import CustomModal from "../CustomModal";
 import commonStyle from "../style/commonStyle";
 import useResponsive from "../utils/useResponsive";
 
-var ws = null
+var ws = new WebSocket("ws://7emezzo-dev.eba-uwfpyt28.eu-south-1.elasticbeanstalk.com/ws")
 var user = null
 
 export default function Home(props) {
@@ -31,11 +31,15 @@ export default function Home(props) {
     modalMessage: ""
   });
 
-  if (ws !== null) {
-    ws.onmessage = (e) => {
-      console.log(JSON.parse(e.data));
-    };
-  }
+  ws.onopen = () => {
+    console.log("WS connesso")
+  };
+  ws.onmessage = (e) => {
+    console.log(JSON.parse(e.data))
+    if (JSON.parse(e.data).users.length > 1) {
+      ws.send(JSON.stringify({ user_id: user.id, method: "startMatch" }));
+    }
+  };
 
   //component did mount
   useEffect(() => {
@@ -48,18 +52,12 @@ export default function Home(props) {
   //partita veloce
   async function setFastGameModal() {
     let message = ""
-    let res = await fetchData(putLobby, 65)
+    let res = await fetchData(putLobby, -1)
     if (res.status !== 200)
       message = "Errore del server"
     else {
       message = "In attesa di altri giocatori..."
-      console.log(res)
-      ws = new WebSocket("ws://7emezzo-dev.eba-uwfpyt28.eu-south-1.elasticbeanstalk.com/ws")
-      ws.onopen = () => {
-        console.log("WS connesso")
-        ws.send(JSON.stringify({ "user_id": user.id, "method": "connectLobby" }));
-      };
-
+      ws.send(JSON.stringify({ "user_id": user.id, "method": "connectLobby" }));
     }
 
     setState({
