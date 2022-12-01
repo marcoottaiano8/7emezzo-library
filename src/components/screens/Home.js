@@ -37,7 +37,7 @@ export default function Home(props) {
     createLobbyModal: false,
     joinLobbyModal: false,
     modalMessage: "",
-    startGameVisible: false
+    startGameVisible: false,
     idLobby: null,
   });
 
@@ -61,15 +61,7 @@ export default function Home(props) {
       console.log("WS connesso");
     };
     ws.onmessage = (e) => {
-      let idLobby = null;
       console.log("ONMESSAGE", JSON.parse(e.data));
-      if (state.idLobby === null) {
-        idLobby = JSON.parse(e.data).idLobby;
-      }
-      setState({
-        ...state,
-        idLobby: idLobby,
-      });
     };
     ws.onclose = () => {
       console.log("DISCONNESSO");
@@ -78,14 +70,16 @@ export default function Home(props) {
 
   //partita veloce
   async function setFastGameModal() {
-    let startGameVisible = false
+    let startGameVisible = false;
     let message = "";
+    let idLobby = null;
     let res = await fetchData(putLobby, -1);
+    console.log(res);
     if (res.status !== 200) message = "Errore del server";
     else {
       message = "In attesa di altri giocatori...";
-      if (res.data.users[0].id === user.id)
-        startGameVisible = true
+      idLobby = res.data.idLobby;
+      if (res.data.users[0].id === user.id) startGameVisible = true;
       ws.send(JSON.stringify({ user_id: user.id, method: "connectLobby" }));
     }
 
@@ -94,6 +88,7 @@ export default function Home(props) {
       fastGameModal: true,
       startGameVisible: startGameVisible,
       modalMessage: message,
+      idLobby: idLobby,
     });
   }
 
@@ -107,14 +102,18 @@ export default function Home(props) {
 
   //esci dalla lobby
   async function quitLobby() {
-    let res = await fetchData(deleteLobby);
-    console.log("quit",res);
-    ws.send(JSON.stringify({ method: "quitLobby", idLobby: state.idLobby }));
-
+    if (!!state.idLobby) {
+      let res = await fetchData(deleteLobby);
+      console.log("quit", res);
+      ws.send(JSON.stringify({ method: "quitLobby", idLobby: state.idLobby }));
+    }
     setState({
       ...state,
       fastGameModal: false,
+      createLobbyModal: false,
+      joinLobbyModal: false,
       idLobby: null,
+      modalMessage: "",
     });
   }
 
@@ -142,7 +141,28 @@ export default function Home(props) {
       idLobby: idLobby,
     });
   }
-  function searchLobby() {}
+
+  async function searchLobby() {
+    let startGameVisible = false;
+    let message = "";
+    let idLobby = null;
+    let res = await fetchData(putLobby, state.idLobby);
+    console.log(res);
+    if (res.status !== 200) message = "Lobby non trovata";
+    else {
+      message = "In attesa di altri giocatori...";
+      idLobby = res.data.idLobby;
+      if (res.data.users[0].id === user.id) startGameVisible = true;
+      ws.send(JSON.stringify({ user_id: user.id, method: "connectLobby" }));
+    }
+
+    setState({
+      ...state,
+      startGameVisible: startGameVisible,
+      modalMessage: message,
+      idLobby: idLobby,
+    });
+  }
 
   return (
     <View style={commonStyle.mainContainer}>
@@ -174,23 +194,19 @@ export default function Home(props) {
           <Text style={[mobile.text, mobile.title]}>Lobby</Text>
           <View style={mobile.modalContainer}>
             <Text style={mobile.text}>{state.modalMessage}</Text>
-            {
-              state.startGameVisible && (
-                <View
-                  style={{
-                    marginTop: 40,
-                    marginBottom: -30,
-                  }}
-                >
-                  <CustomButton label="Inizia partita" callback={startMatch} />
-                </View>
-              )}
+            {state.startGameVisible && (
+              <View
+                style={{
+                  marginTop: 40,
+                  marginBottom: -30,
+                }}
+              >
+                <CustomButton label="Inizia partita" callback={startMatch} />
+              </View>
+            )}
           </View>
         </CustomModal>
-        <CustomModal
-          visible={state.createLobbyModal}
-          callbackClose={setCreateLobbyModal}
-        >
+        <CustomModal visible={state.createLobbyModal} callbackClose={quitLobby}>
           <Text style={[mobile.text, mobile.title]}>Lobby</Text>
           <View style={mobile.modalContainer}>
             <Text style={mobile.text}>In attesa di altri giocatori...</Text>
@@ -204,19 +220,36 @@ export default function Home(props) {
             </View>
           </View>
         </CustomModal>
-        <CustomModal
-          visible={state.joinLobbyModal}
-          callbackClose={setJoinLobbyModal}
-        >
+        <CustomModal visible={state.joinLobbyModal} callbackClose={quitLobby}>
           <Text style={[mobile.text, mobile.title]}>Lobby {state.idLobby}</Text>
           <View style={mobile.modalContainer}>
-            <CustomInputBox
-              placeholder="Inserire id della lobby"
-              callbackChange={setIdLobby}
-              type="number"
-            />
-            <CustomButton label="Cerca lobby" callback={searchLobby} />
-            <Text style={mobile.text}></Text>
+            {state.modalMessage === "" ? (
+              <View>
+                <CustomInputBox
+                  placeholder="Inserire id della lobby"
+                  callbackChange={setIdLobby}
+                  type="number"
+                />
+                <CustomButton label="Cerca lobby" callback={searchLobby} />
+              </View>
+            ) : (
+              <View>
+                <Text style={mobile.text}>{state.modalMessage}</Text>
+                {state.startGameVisible && (
+                  <View
+                    style={{
+                      marginTop: 40,
+                      marginBottom: -30,
+                    }}
+                  >
+                    <CustomButton
+                      label="Inizia partita"
+                      callback={startMatch}
+                    />
+                  </View>
+                )}
+              </View>
+            )}
           </View>
         </CustomModal>
       </ImageBackground>
