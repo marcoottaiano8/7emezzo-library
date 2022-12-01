@@ -24,7 +24,7 @@ export async function getDataFromStorage(key) {
 }
 
 //inserisco i dati nel DB
-export async function setDataInStorage(data, key) {
+export async function setDataInStorage(key, data) {
   if (Platform.OS === 'web')
     sessionStorage.setItem(key, JSON.stringify(data));
   else {

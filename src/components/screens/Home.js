@@ -8,6 +8,12 @@ import {
   Image,
   TouchableOpacity,
 } from "react-native";
+
+//api
+import { fetchData } from "../utils/utils";
+import {postLobby, putLobby} from "7emezzo-gs/dist/services/api/lobbyApi"
+
+//components
 import CustomButton from "../CustomButton";
 import CustomModal from "../CustomModal";
 import commonStyle from "../style/commonStyle";
@@ -21,19 +27,26 @@ export default function Home(props) {
     createLobbyModal: false,
   });
 
-  function setFastGameModal() {
+  //partita veloce
+  async function setFastGameModal() {
+    let res = await fetchData(putLobby, -1)
+    console.log(res)
+
     setState({
       ...state,
       fastGameModal: !state.fastGameModal,
     });
   }
 
+  //crea lobby
   function setCreateLobbyModal() {
     setState({
       ...state,
       createLobbyModal: !state.createLobbyModal,
     });
   }
+
+  //vai alla classifica
   function goToRanking() {
     if (!!props.goToRanking) props.goToRanking();
   }

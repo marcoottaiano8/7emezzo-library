@@ -7,6 +7,8 @@ import {
   Image,
   Text,
 } from "react-native";
+
+//components
 import useResponsive from "../utils/useResponsive";
 import commonstyle from "../style/commonStyle";
 import CustomButton from "../CustomButton";
