@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   ImageBackground,
@@ -9,46 +9,24 @@ import {
   TouchableOpacity,
   ScrollView,
   FlatList,
+  Platform,
 } from "react-native";
 import CustomButton from "../CustomButton";
 import commonStyle from "../style/commonStyle";
 import useResponsive from "../utils/useResponsive";
-
-const users = [
-  {
-    id: 0,
-    username: "JustOtto",
-    score: 70,
-  },
-  {
-    id: 1,
-    username: "Lotto",
-    score: 65,
-  },
-  {
-    id: 2,
-    username: "Daniele",
-    score: 50,
-  },
-  {
-    id: 3,
-    username: "Mattia",
-    score: 7,
-  },
-  {
-    id: 4,
-    username: "Andrea",
-    score: 2,
-  },
-  {
-    id: 5,
-    username: "Luca",
-    score: 0,
-  },
-];
+import { fetchData, getDataFromStorage } from "../utils/utils";
+import { rankingApi } from "7emezzo-gs/dist/services/api/rankingApi";
 
 export default function Ranking(props) {
   const [Mobile, Default, isDesktop] = useResponsive();
+  const [state, setState] = useState({
+    user: {
+      userIndex: null,
+      username: null,
+      score: null,
+    },
+    ranking: [],
+  });
 
   const icons = [
     require("../assets/images/cup/gold-cup.png"),
@@ -60,21 +38,69 @@ export default function Ranking(props) {
     if (!!props.goToHome) props.goToHome();
   }
 
-  const renderItem = ({ item }) => (
+  useEffect(() => {
+    prepare();
+  }, []);
+
+  async function prepare() {
+    let result = await fetchData(rankingApi);
+    console.log("classifica", result);
+    let user = await getDataFromStorage("user");
+    user = JSON.parse(user);
+    user.id = 15;
+    let username = null,
+      score = null,
+      userIndex = null;
+    result.data.users.forEach((el, index) => {
+      if (user.id === el.id) {
+        userIndex = index + 1;
+        username = el.username;
+        score = el.score;
+        console.log(userIndex, username, score);
+      }
+    });
+    setState({
+      ...state,
+      user: {
+        userIndex: userIndex,
+        username: username,
+        score: score,
+      },
+      ranking: result.data.users,
+    });
+  }
+
+  const renderItem = ({ item, index }) => (
     <View style={mobile.item}>
       <View style={mobile.rowView}>
-        {item.id > 2 ? (
-          <View style={[mobile.iconCup, mobile.centerView]}>
-            <Text style={mobile.text}>{item.id}</Text>
+        {index > 2 ? (
+          <View
+            style={[
+              isDesktop ? desktop.iconCup : mobile.iconCup,
+              mobile.centerView,
+            ]}
+          >
+            <Text style={[mobile.text, isDesktop && desktop.text]}>
+              {index + 1}
+            </Text>
           </View>
         ) : (
-          <Image source={icons[item.id]} style={mobile.iconCup}></Image>
+          <Image
+            source={icons[index]}
+            style={isDesktop ? desktop.iconCup : mobile.iconCup}
+          ></Image>
         )}
-        <Text style={[mobile.text, mobile.username]}>{item.username}</Text>
+        <Text
+          style={[mobile.text, mobile.username, isDesktop && desktop.username]}
+        >
+          {item.username}
+        </Text>
       </View>
       <View style={{ flexDirection: "row" }}>
-        <Text style={mobile.text}>{item.score} </Text>
-        <Text style={mobile.text}>pts</Text>
+        <Text style={[mobile.text, isDesktop && desktop.text]}>
+          {item.score}
+        </Text>
+        <Text style={[mobile.text, isDesktop && desktop.text]}>pts</Text>
       </View>
     </View>
   );
@@ -86,39 +112,125 @@ export default function Ranking(props) {
         resizeMode="cover"
         style={[commonStyle.backgroundImg, { justifyContent: "center" }]}
       >
-        <View style={mobile.table}>
+        <View style={[mobile.table, isDesktop && desktop.table]}>
           <ImageBackground
             source={require("../assets/images/pokerTable.jpg")}
             resizeMode="cover"
-            style={mobile.tableImage}
+            style={[mobile.tableImage, isDesktop && desktop.tableImage]}
           >
-            <Text style={mobile.title}>Classifica</Text>
-            <View style={[mobile.line, { marginTop: 20 }]} />
-            <ScrollView style={mobile.scrollView}>
-              <View>
-                <FlatList
-                  data={users}
-                  renderItem={renderItem}
-                  keyExtractor={(item) => item.id}
+            <View
+              style={{
+                flex: 1,
+              }}
+            >
+              <Text style={[mobile.title, isDesktop && desktop.title]}>
+                Classifica
+              </Text>
+              <View style={isDesktop && mobile.centerView}>
+                <View
+                  style={[
+                    mobile.line,
+                    { marginTop: 20 },
+                    isDesktop && desktop.line,
+                  ]}
                 />
               </View>
-            </ScrollView>
-            <View style={[mobile.line, { marginBottom: 10 }]} />
-            <View style={[mobile.item, { marginHorizontal: 30 }]}>
-              <View style={mobile.rowView}>
-                <View style={[mobile.iconCup, mobile.centerView]}>
-                  <Text style={mobile.text}>5</Text>
+            </View>
+
+            <View style={{ justifyContent: "space-between", flex: 5 }}>
+              <View
+                style={[mobile.scrollView, isDesktop && desktop.scrollView]}
+              >
+                {!!state.ranking && (
+                  <FlatList
+                    data={state.ranking}
+                    renderItem={renderItem}
+                    keyExtractor={(item) => item.id}
+                  />
+                )}
+              </View>
+              {!!state.user.userIndex ? (
+                <View style={isDesktop && mobile.centerView}>
+                  <View
+                    style={[
+                      mobile.line,
+                      { marginBottom: 10 },
+                      isDesktop && desktop.line,
+                    ]}
+                  />
+                  <View style={[mobile.item]}>
+                    <View style={mobile.rowView}>
+                      <View
+                        style={[
+                          isDesktop ? desktop.iconCup : mobile.iconCup,
+                          mobile.centerView,
+                        ]}
+                      >
+                        {state.user.userIndex > 3 ? (
+                          <Text
+                            style={[mobile.text, isDesktop && desktop.text]}
+                          >
+                            state.user.userIndex
+                          </Text>
+                        ) : (
+                          <Image
+                            source={icons[state.user.userIndex - 1]}
+                            style={isDesktop ? desktop.iconCup : mobile.iconCup}
+                          />
+                        )}
+                      </View>
+                      <Text
+                        style={[
+                          mobile.text,
+                          mobile.username,
+                          isDesktop && desktop.username,
+                        ]}
+                      >
+                        {state.user.username}
+                      </Text>
+                    </View>
+                    <View style={{ flexDirection: "row" }}>
+                      <Text style={[mobile.text, isDesktop && desktop.text]}>
+                        {state.user.score}
+                      </Text>
+                      <Text style={[mobile.text, isDesktop && desktop.text]}>
+                        pts
+                      </Text>
+                    </View>
+                  </View>
                 </View>
-                <Text style={[mobile.text, mobile.username]}>Pippo</Text>
-              </View>
-              <View style={{ flexDirection: "row" }}>
-                <Text style={mobile.text}>3 </Text>
-                <Text style={mobile.text}>pts</Text>
-              </View>
+              ) : (
+                <View style={isDesktop && mobile.centerView}>
+                  <View
+                    style={[
+                      mobile.line,
+                      { marginBottom: 10 },
+                      isDesktop && desktop.line,
+                    ]}
+                  />
+                  <View style={[mobile.centerView, { marginBottom: 20 }]}>
+                    <Text
+                      style={[
+                        mobile.text,
+                        mobile.username,
+                        isDesktop && desktop.username,
+                      ]}
+                    >
+                      Non classificato
+                    </Text>
+                  </View>
+                </View>
+              )}
             </View>
           </ImageBackground>
         </View>
-        <CustomButton label={"Home"} callback={goToHome} />
+        <View
+          style={{
+            marginTop: 30,
+          }}
+        >
+          <CustomButton label={"Home"} callback={goToHome} />
+        </View>
       </ImageBackground>
     </View>
   );
@@ -140,9 +252,9 @@ const mobile = StyleSheet.create({
     borderRadius: 20,
   },
   scrollView: {
-    paddingHorizontal: 30,
     marginTop: 30,
     marginBottom: 20,
+    maxHeight: "70%",
   },
   line: {
     backgroundColor: "white",
@@ -170,6 +282,7 @@ const mobile = StyleSheet.create({
     alignItems: "center",
   },
   item: {
+    paddingHorizontal: 30,
     marginBottom: 20,
     justifyContent: "space-between",
     alignItems: "center",
@@ -182,5 +295,37 @@ const mobile = StyleSheet.create({
   username: {
     fontWeight: "bold",
     fontSize: 25,
+  },
+});
+
+const desktop = StyleSheet.create({
+  tableImage: {
+    width: "100%",
+    height: "100%",
+  },
+  table: {
+    width: "50%",
+    height: "70%",
+  },
+  line: {
+    width: "60%",
+    margin: "auto",
+  },
+  scrollView: {
+    marginHorizontal: "20%",
+  },
+  username: {
+    fontSize: 30,
+  },
+  text: {
+    fontSize: 25,
+    marginHorizontal: 5,
+  },
+  title: {
+    fontSize: 55,
+  },
+  iconCup: {
+    width: 33,
+    height: 33,
   },
 });
