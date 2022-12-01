@@ -11,8 +11,10 @@ function CustomInputBox(props) {
   });
 
   function changeInput(e) {
+    let value;
+    props.type === "number" ? (value = e.replace(/[^0-9]/g, "")) : (value = e);
     setState({
-      value: e,
+      value: value,
     });
     if (!!props.callbackChange) props.callbackChange(e);
   }

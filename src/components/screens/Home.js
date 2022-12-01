@@ -7,6 +7,7 @@ import {
   Text,
   Image,
   TouchableOpacity,
+  TextInput,
 } from "react-native";
 
 //api
@@ -22,10 +23,11 @@ import CustomButton from "../CustomButton";
 import CustomModal from "../CustomModal";
 import commonStyle from "../style/commonStyle";
 import useResponsive from "../utils/useResponsive";
+import CustomInputBox from "../CustomInputBox";
 
 var ws = null;
 var user = null;
-var idLobby = null;
+let idLobby = null;
 
 export default function Home(props) {
   const [Mobile, Default, isDesktop] = useResponsive();
@@ -33,7 +35,9 @@ export default function Home(props) {
   const [state, setState] = useState({
     fastGameModal: false,
     createLobbyModal: false,
+    joinLobbyModal: false,
     modalMessage: "",
+    idLobby: null,
   });
 
   // if (ws !== null) {
@@ -56,15 +60,18 @@ export default function Home(props) {
       console.log("WS connesso");
     };
     ws.onmessage = (e) => {
+      let idLobby = null;
       console.log("ONMESSAGE", JSON.parse(e.data));
-      idLobby = JSON.parse(e.data).idLobby;
-      console.log(idLobby);
+      if (state.idLobby === null) {
+        idLobby = JSON.parse(e.data).idLobby;
+      }
+      setState({
+        ...state,
+        idLobby: idLobby,
+      });
     };
     ws.onclose = () => {
       console.log("DISCONNESSO");
-      ws = new WebSocket(
-        "ws://7emezzo-dev.eba-uwfpyt28.eu-south-1.elasticbeanstalk.com/ws"
-      );
     };
   }
 
@@ -81,7 +88,7 @@ export default function Home(props) {
 
     setState({
       ...state,
-      fastGameModal: !state.fastGameModal,
+      fastGameModal: true,
       modalMessage: message,
     });
   }
@@ -98,11 +105,12 @@ export default function Home(props) {
   async function quitLobby() {
     let res = await fetchData(deleteLobby);
     console.log(res);
-    ws.send(JSON.stringify({ method: "quitLobby", idLobby: idLobby }));
+    ws.send(JSON.stringify({ method: "quitLobby", idLobby: state.idLobby }));
 
     setState({
       ...state,
-      fastGameModal: !state.fastGameModal,
+      fastGameModal: false,
+      idLobby: null,
     });
   }
 
@@ -115,6 +123,22 @@ export default function Home(props) {
   function startMatch() {
     ws.send(JSON.stringify({ user_id: user.id, method: "startMatch" }));
   }
+
+  function setJoinLobbyModal() {
+    setState({
+      ...state,
+      joinLobbyModal: !state.joinLobbyModal,
+    });
+  }
+
+  function setIdLobby(e) {
+    idLobby = e.replace(/[^0-9]/g, "");
+    setState({
+      ...state,
+      idLobby: idLobby,
+    });
+  }
+  function searchLobby() {}
 
   return (
     <View style={commonStyle.mainContainer}>
@@ -133,6 +157,12 @@ export default function Home(props) {
           </View>
           <CustomButton label={"Partita veloce"} callback={setFastGameModal} />
           <CustomButton label={"Crea lobby"} callback={setCreateLobbyModal} />
+          <View style={{ flexDirection: "row" }}>
+            <CustomButton
+              label={"Unisciti a lobby"}
+              callback={setJoinLobbyModal}
+            />
+          </View>
           <CustomButton label={"Classifica"} callback={goToRanking} />
         </View>
 
@@ -140,12 +170,7 @@ export default function Home(props) {
           <Text style={[mobile.text, mobile.title]}>Lobby</Text>
           <View style={mobile.modalContainer}>
             <Text style={mobile.text}>{state.modalMessage}</Text>
-            <View
-              style={{
-                marginTop: 40,
-                marginBottom: -30,
-              }}
-            >
+            <View style={{ marginTop: 40, marginBottom: -30 }}>
               <CustomButton label="Inizia partita" callback={startMatch} />
             </View>
           </View>
@@ -167,6 +192,21 @@ export default function Home(props) {
             </View>
           </View>
         </CustomModal>
+        <CustomModal
+          visible={state.joinLobbyModal}
+          callbackClose={setJoinLobbyModal}
+        >
+          <Text style={[mobile.text, mobile.title]}>Lobby {state.idLobby}</Text>
+          <View style={mobile.modalContainer}>
+            <CustomInputBox
+              placeholder="Inserire id della lobby"
+              callbackChange={setIdLobby}
+              type="number"
+            />
+            <CustomButton label="Cerca lobby" callback={searchLobby} />
+            <Text style={mobile.text}></Text>
+          </View>
+        </CustomModal>
       </ImageBackground>
     </View>
   );
@@ -175,7 +215,7 @@ export default function Home(props) {
 const mobile = StyleSheet.create({
   container: {
     flex: 1,
-    marginBottom: Dimensions.get("window").height / 4,
+    marginBottom: Dimensions.get("window").height / 8,
     justifyContent: "flex-end",
   },
   image: {
