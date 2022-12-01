@@ -154,11 +154,11 @@ export default function Ranking(props) {
                   <View
                     style={[
                       mobile.line,
-                      { marginBottom: 10 },
+                      isDesktop ? { marginBottom: 20 } : { marginBottom: 10 },
                       isDesktop && desktop.line,
                     ]}
                   />
-                  <View style={[mobile.item]}>
+                  <View style={[mobile.item, isDesktop && desktop.item]}>
                     <View style={mobile.rowView}>
                       <View
                         style={[
@@ -312,7 +312,7 @@ const desktop = StyleSheet.create({
     margin: "auto",
   },
   scrollView: {
-    marginHorizontal: "20%",
+    marginHorizontal: "18%",
   },
   username: {
     fontSize: 30,
@@ -327,5 +327,8 @@ const desktop = StyleSheet.create({
   iconCup: {
     width: 33,
     height: 33,
+  },
+  item: {
+    width: "63%",
   },
 });

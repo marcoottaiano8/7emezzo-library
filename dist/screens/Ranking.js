@@ -101,28 +101,29 @@ function Ranking(props) {
     return _prepare.apply(this, arguments);
   }
   var renderItem = function renderItem(_ref) {
-    var item = _ref.item;
+    var item = _ref.item,
+      index = _ref.index;
     return /*#__PURE__*/_react.default.createElement(_reactNative.View, {
       style: mobile.item
     }, /*#__PURE__*/_react.default.createElement(_reactNative.View, {
       style: mobile.rowView
-    }, state.ranking.indexOf(item) > 2 ? /*#__PURE__*/_react.default.createElement(_reactNative.View, {
-      style: [mobile.iconCup, mobile.centerView]
+    }, index > 2 ? /*#__PURE__*/_react.default.createElement(_reactNative.View, {
+      style: [isDesktop ? desktop.iconCup : mobile.iconCup, mobile.centerView]
     }, /*#__PURE__*/_react.default.createElement(_reactNative.Text, {
-      style: mobile.text
-    }, state.ranking.indexOf(item) + 1)) : /*#__PURE__*/_react.default.createElement(_reactNative.Image, {
-      source: icons[state.ranking.indexOf(item)],
-      style: mobile.iconCup
+      style: [mobile.text, isDesktop && desktop.text]
+    }, index + 1)) : /*#__PURE__*/_react.default.createElement(_reactNative.Image, {
+      source: icons[index],
+      style: isDesktop ? desktop.iconCup : mobile.iconCup
     }), /*#__PURE__*/_react.default.createElement(_reactNative.Text, {
-      style: [mobile.text, mobile.username]
+      style: [mobile.text, mobile.username, isDesktop && desktop.username]
     }, item.username)), /*#__PURE__*/_react.default.createElement(_reactNative.View, {
       style: {
         flexDirection: "row"
       }
     }, /*#__PURE__*/_react.default.createElement(_reactNative.Text, {
-      style: mobile.text
-    }, item.score, " "), /*#__PURE__*/_react.default.createElement(_reactNative.Text, {
-      style: mobile.text
+      style: [mobile.text, isDesktop && desktop.text]
+    }, item.score), /*#__PURE__*/_react.default.createElement(_reactNative.Text, {
+      style: [mobile.text, isDesktop && desktop.text]
     }, "pts")));
   };
   return /*#__PURE__*/_react.default.createElement(_reactNative.View, {
@@ -144,7 +145,7 @@ function Ranking(props) {
       flex: 1
     }
   }, /*#__PURE__*/_react.default.createElement(_reactNative.Text, {
-    style: mobile.title
+    style: [mobile.title, isDesktop && desktop.title]
   }, "Classifica"), /*#__PURE__*/_react.default.createElement(_reactNative.View, {
     style: isDesktop && mobile.centerView
   }, /*#__PURE__*/_react.default.createElement(_reactNative.View, {
@@ -157,7 +158,7 @@ function Ranking(props) {
       flex: 5
     }
   }, /*#__PURE__*/_react.default.createElement(_reactNative.View, {
-    style: mobile.scrollView
+    style: [mobile.scrollView, isDesktop && desktop.scrollView]
   }, !!state.ranking && /*#__PURE__*/_react.default.createElement(_reactNative.FlatList, {
     data: state.ranking,
     renderItem: renderItem,
@@ -167,30 +168,32 @@ function Ranking(props) {
   })), !!state.user.userIndex ? /*#__PURE__*/_react.default.createElement(_reactNative.View, {
     style: isDesktop && mobile.centerView
   }, /*#__PURE__*/_react.default.createElement(_reactNative.View, {
-    style: [mobile.line, {
+    style: [mobile.line, isDesktop ? {
+      marginBottom: 20
+    } : {
       marginBottom: 10
     }, isDesktop && desktop.line]
   }), /*#__PURE__*/_react.default.createElement(_reactNative.View, {
-    style: [mobile.item]
+    style: [mobile.item, isDesktop && desktop.item]
   }, /*#__PURE__*/_react.default.createElement(_reactNative.View, {
     style: mobile.rowView
   }, /*#__PURE__*/_react.default.createElement(_reactNative.View, {
-    style: [mobile.iconCup, mobile.centerView]
+    style: [isDesktop ? desktop.iconCup : mobile.iconCup, mobile.centerView]
   }, state.user.userIndex > 3 ? /*#__PURE__*/_react.default.createElement(_reactNative.Text, {
-    style: mobile.text
+    style: [mobile.text, isDesktop && desktop.text]
   }, "state.user.userIndex") : /*#__PURE__*/_react.default.createElement(_reactNative.Image, {
     source: icons[state.user.userIndex - 1],
-    style: mobile.iconCup
+    style: isDesktop ? desktop.iconCup : mobile.iconCup
   })), /*#__PURE__*/_react.default.createElement(_reactNative.Text, {
-    style: [mobile.text, mobile.username]
+    style: [mobile.text, mobile.username, isDesktop && desktop.username]
   }, state.user.username)), /*#__PURE__*/_react.default.createElement(_reactNative.View, {
     style: {
       flexDirection: "row"
     }
   }, /*#__PURE__*/_react.default.createElement(_reactNative.Text, {
-    style: mobile.text
+    style: [mobile.text, isDesktop && desktop.text]
   }, state.user.score), /*#__PURE__*/_react.default.createElement(_reactNative.Text, {
-    style: mobile.text
+    style: [mobile.text, isDesktop && desktop.text]
   }, "pts")))) : /*#__PURE__*/_react.default.createElement(_reactNative.View, {
     style: isDesktop && mobile.centerView
   }, /*#__PURE__*/_react.default.createElement(_reactNative.View, {
@@ -202,7 +205,7 @@ function Ranking(props) {
       marginBottom: 20
     }]
   }, /*#__PURE__*/_react.default.createElement(_reactNative.Text, {
-    style: [mobile.text, mobile.username]
+    style: [mobile.text, mobile.username, isDesktop && desktop.username]
   }, "Non classificato")))))), /*#__PURE__*/_react.default.createElement(_reactNative.View, {
     style: {
       marginTop: 30
@@ -285,5 +288,25 @@ var desktop = _reactNative.StyleSheet.create({
   line: {
     width: "60%",
     margin: "auto"
+  },
+  scrollView: {
+    marginHorizontal: "18%"
+  },
+  username: {
+    fontSize: 30
+  },
+  text: {
+    fontSize: 25,
+    marginHorizontal: 5
+  },
+  title: {
+    fontSize: 55
+  },
+  iconCup: {
+    width: 33,
+    height: 33
+  },
+  item: {
+    width: "63%"
   }
 });
