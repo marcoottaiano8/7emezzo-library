@@ -34,6 +34,7 @@ export default function Home(props) {
     fastGameModal: false,
     createLobbyModal: false,
     modalMessage: "",
+    startGameVisible: false
   });
 
   // if (ws !== null) {
@@ -58,7 +59,6 @@ export default function Home(props) {
     ws.onmessage = (e) => {
       console.log("ONMESSAGE", JSON.parse(e.data));
       idLobby = JSON.parse(e.data).idLobby;
-      console.log(idLobby);
     };
     ws.onclose = () => {
       console.log("DISCONNESSO");
@@ -67,18 +67,21 @@ export default function Home(props) {
 
   //partita veloce
   async function setFastGameModal() {
+    let startGameVisible = false
     let message = "";
-    let res = await fetchData(putLobby, 95);
+    let res = await fetchData(putLobby, -1);
     if (res.status !== 200) message = "Errore del server";
     else {
       message = "In attesa di altri giocatori...";
-      console.log(res);
+      if (res.data.users[0].id === user.id)
+        startGameVisible = true
       ws.send(JSON.stringify({ user_id: user.id, method: "connectLobby" }));
     }
 
     setState({
       ...state,
       fastGameModal: !state.fastGameModal,
+      startGameVisible: startGameVisible,
       modalMessage: message,
     });
   }
@@ -94,7 +97,7 @@ export default function Home(props) {
   //esci dalla lobby
   async function quitLobby() {
     let res = await fetchData(deleteLobby);
-    console.log(res);
+    console.log("quit",res);
     ws.send(JSON.stringify({ method: "quitLobby", idLobby: idLobby }));
 
     setState({
@@ -137,14 +140,17 @@ export default function Home(props) {
           <Text style={[mobile.text, mobile.title]}>Lobby</Text>
           <View style={mobile.modalContainer}>
             <Text style={mobile.text}>{state.modalMessage}</Text>
-            <View
-              style={{
-                marginTop: 40,
-                marginBottom: -30,
-              }}
-            >
-              <CustomButton label="Inizia partita" callback={startMatch} />
-            </View>
+            {
+              state.startGameVisible && (
+                <View
+                  style={{
+                    marginTop: 40,
+                    marginBottom: -30,
+                  }}
+                >
+                  <CustomButton label="Inizia partita" callback={startMatch} />
+                </View>
+              )}
           </View>
         </CustomModal>
         <CustomModal
