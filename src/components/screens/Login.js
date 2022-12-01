@@ -59,6 +59,8 @@ export default function Login(props) {
       modalTitle = "";
       modalBody = "Login avvenuto con successo";
 
+      console.log(res.data.token);
+
       setDataInStorage("token", res.data.token);
       setDataInStorage("refreshToken", res.data.refreshToken);
       setDataInStorage("user", JSON.stringify(res.data));

@@ -86,6 +86,7 @@ function Login(props) {
               } else if (res.status === 200) {
                 modalTitle = "";
                 modalBody = "Login avvenuto con successo";
+                console.log(res.data.token);
                 (0, _utils.setDataInStorage)("token", res.data.token);
                 (0, _utils.setDataInStorage)("refreshToken", res.data.refreshToken);
                 (0, _utils.setDataInStorage)("user", JSON.stringify(res.data));

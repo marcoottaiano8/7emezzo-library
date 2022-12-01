@@ -26,7 +26,7 @@ function _getDataFromStorage() {
         switch (_context.prev = _context.next) {
           case 0:
             data = [];
-            if (!(_reactNative.Platform.OS === 'web')) {
+            if (!(_reactNative.Platform.OS === "web")) {
               _context.next = 5;
               break;
             }
@@ -63,12 +63,12 @@ function setDataInStorage(_x2, _x3) {
   return _setDataInStorage.apply(this, arguments);
 } //generic api function
 function _setDataInStorage() {
-  _setDataInStorage = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(data, key) {
+  _setDataInStorage = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(key, data) {
     return _regeneratorRuntime().wrap(function _callee2$(_context2) {
       while (1) {
         switch (_context2.prev = _context2.next) {
           case 0:
-            if (!(_reactNative.Platform.OS === 'web')) {
+            if (!(_reactNative.Platform.OS === "web")) {
               _context2.next = 4;
               break;
             }
@@ -122,4 +122,3 @@ function _fetchData() {
   }));
   return _fetchData.apply(this, arguments);
 }
-;
