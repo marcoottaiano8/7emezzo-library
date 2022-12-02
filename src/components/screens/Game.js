@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   ImageBackground,
   View,
@@ -7,14 +7,49 @@ import {
   Image,
   Text,
 } from "react-native";
+import { getDataFromStorage } from "../utils/utils";
 
 //components
 import useResponsive from "../utils/useResponsive";
 import commonstyle from "../style/commonStyle";
 import CustomButton from "../CustomButton";
 
+var ws;
+var user;
+
 export default function Game() {
   const [Mobile, Default, isDesktop] = useResponsive();
+
+  const [state, setState] = useState({
+    idLobby: null,
+  });
+
+  useEffect(() => {
+    prepare();
+  }, []);
+
+  async function prepare() {
+    user = JSON.parse(await getDataFromStorage("user"));
+    ws = new WebSocket(
+      "ws://7emezzo-dev.eba-uwfpyt28.eu-south-1.elasticbeanstalk.com/ws"
+    );
+    ws.onopen = () => {
+      console.log("WS connesso");
+      if (state.idLobby !== null) {
+        console.log("riconnesso alla lobby");
+        ws.send(JSON.stringify({ user_id: user.id, method: "connectLobby" }));
+      }
+    };
+    ws.onmessage = (e) => {
+      console.log("ONMESSAGE", JSON.parse(e.data));
+    };
+    ws.onclose = () => {
+      console.log("DISCONNESSO");
+      console.log("Riconnessione in corso");
+      prepare();
+    };
+  }
+
   function log() {
     console.log("ciao");
   }

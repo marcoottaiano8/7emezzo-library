@@ -11,7 +11,11 @@ import {
 } from "react-native";
 
 //api
-import { fetchData, getDataFromStorage } from "../utils/utils";
+import {
+  fetchData,
+  getDataFromStorage,
+  setDataInStorage,
+} from "../utils/utils";
 import {
   postLobby,
   putLobby,
@@ -37,15 +41,9 @@ export default function Home(props) {
     createLobbyModal: false,
     joinLobbyModal: false,
     modalMessage: "",
-    startGameVisible: false,
+    startGameVisible: true,
     idLobby: null,
   });
-
-  // if (ws !== null) {
-  //   ws.onmessage = (e) => {
-  //     console.log(JSON.parse(e.data));
-  //   };
-  // }
 
   //component did mount
   useEffect(() => {
@@ -59,14 +57,34 @@ export default function Home(props) {
     );
     ws.onopen = () => {
       console.log("WS connesso");
+      console.log("ID LOBBY", state.idLobby);
+      if (state.idLobby !== null) {
+        console.log("riconnesso alla lobby");
+        ws.send(JSON.stringify({ user_id: user.id, method: "connectLobby" }));
+      }
     };
     ws.onmessage = (e) => {
       console.log("ONMESSAGE", JSON.parse(e.data));
+      // checkHost(JSON.parse(e.data));
     };
     ws.onclose = () => {
       console.log("DISCONNESSO");
+      setTimeout(() => {
+        console.log("Riconnessione in corso");
+        prepare();
+      }, 1000);
     };
   }
+
+  // function checkHost(lobby) {
+  //   let startGameVisible = false;
+  //   if (lobby.users[0].id === user.id) startGameVisible = true;
+
+  //   setState({
+  //     ...state,
+  //     startGameVisible: startGameVisible,
+  //   });
+  // }
 
   //partita veloce
   async function setFastGameModal() {
@@ -86,7 +104,7 @@ export default function Home(props) {
     setState({
       ...state,
       fastGameModal: true,
-      startGameVisible: startGameVisible,
+      // startGameVisible: startGameVisible,
       modalMessage: message,
       idLobby: idLobby,
     });
@@ -109,7 +127,7 @@ export default function Home(props) {
     setState({
       ...state,
       createLobbyModal: true,
-      startGameVisible: startGameVisible,
+      // startGameVisible: startGameVisible,
       modalMessage: message,
       idLobby: idLobby,
     });
@@ -117,7 +135,10 @@ export default function Home(props) {
 
   //esci dalla lobby
   async function quitLobby() {
-    if (!!state.idLobby) {
+    if (
+      !!state.idLobby ||
+      state.modalMessage !== "In attesa di altri giocatori..."
+    ) {
       let res = await fetchData(deleteLobby);
       console.log("quit", res);
       ws.send(JSON.stringify({ method: "quitLobby", idLobby: state.idLobby }));
@@ -140,6 +161,7 @@ export default function Home(props) {
   //inizia la partita
   function startMatch() {
     ws.send(JSON.stringify({ user_id: user.id, method: "startMatch" }));
+    if (!!props.goToGame) props.goToGame();
   }
 
   function setJoinLobbyModal() {
@@ -173,7 +195,7 @@ export default function Home(props) {
 
     setState({
       ...state,
-      startGameVisible: startGameVisible,
+      // startGameVisible: startGameVisible,
       modalMessage: message,
       idLobby: idLobby,
     });
