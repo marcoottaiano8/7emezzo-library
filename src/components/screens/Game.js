@@ -16,6 +16,7 @@ import CustomButton from "../CustomButton";
 
 var ws;
 var user;
+let connected = false;
 
 export default function Game() {
   const [Mobile, Default, isDesktop] = useResponsive();
@@ -26,28 +27,40 @@ export default function Game() {
 
   useEffect(() => {
     prepare();
+    // initMatch();
   }, []);
 
-  async function prepare() {
+  async function connect() {
     user = JSON.parse(await getDataFromStorage("user"));
     ws = new WebSocket(
       "ws://7emezzo-dev.eba-uwfpyt28.eu-south-1.elasticbeanstalk.com/ws"
     );
     ws.onopen = () => {
       console.log("WS connesso");
-      if (state.idLobby !== null) {
-        console.log("riconnesso alla lobby");
-        ws.send(JSON.stringify({ user_id: user.id, method: "connectLobby" }));
-      }
+      ws.send(JSON.stringify({ user_id: user.id, method: "connectLobby" }));
     };
     ws.onmessage = (e) => {
       console.log("ONMESSAGE", JSON.parse(e.data));
+      connected = true;
     };
     ws.onclose = () => {
       console.log("DISCONNESSO");
       console.log("Riconnessione in corso");
-      prepare();
+      connect();
     };
+  }
+  async function prepare() {
+    await connect();
+    initMatch();
+  }
+
+  function initMatch() {
+    if (connected) {
+      ws.send(JSON.stringify({ user_id: user.id, method: "requestCard" }));
+      ws.send(JSON.stringify({ user_id: user.id, method: "checkEndMatch" }));
+    } else {
+      connect();
+    }
   }
 
   function log() {
