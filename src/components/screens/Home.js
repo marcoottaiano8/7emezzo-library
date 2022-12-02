@@ -93,10 +93,25 @@ export default function Home(props) {
   }
 
   //crea lobby
-  function setCreateLobbyModal() {
+  async function setCreateLobbyModal() {
+    let startGameVisible = false;
+    let message = "";
+    let idLobby = null;
+    let res = await fetchData(postLobby);
+    console.log(res);
+    if (res.status !== 200) message = "Errore del server";
+    else {
+      message = "In attesa di altri giocatori...";
+      idLobby = res.data.idLobby;
+      if (res.data.users[0].id === user.id) startGameVisible = true;
+      ws.send(JSON.stringify({ user_id: user.id, method: "connectLobby" }));
+    }
     setState({
       ...state,
-      createLobbyModal: !state.createLobbyModal,
+      createLobbyModal: true,
+      startGameVisible: startGameVisible,
+      modalMessage: message,
+      idLobby: idLobby,
     });
   }
 
@@ -191,7 +206,7 @@ export default function Home(props) {
         </View>
 
         <CustomModal visible={state.fastGameModal} callbackClose={quitLobby}>
-          <Text style={[mobile.text, mobile.title]}>Lobby</Text>
+          <Text style={[mobile.text, mobile.title]}>Lobby {state.idLobby}</Text>
           <View style={mobile.modalContainer}>
             <Text style={mobile.text}>{state.modalMessage}</Text>
             {state.startGameVisible && (
@@ -207,7 +222,7 @@ export default function Home(props) {
           </View>
         </CustomModal>
         <CustomModal visible={state.createLobbyModal} callbackClose={quitLobby}>
-          <Text style={[mobile.text, mobile.title]}>Lobby</Text>
+          <Text style={[mobile.text, mobile.title]}>Lobby {state.idLobby}</Text>
           <View style={mobile.modalContainer}>
             <Text style={mobile.text}>In attesa di altri giocatori...</Text>
             <View
