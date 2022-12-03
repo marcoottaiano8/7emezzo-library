@@ -56,8 +56,8 @@ export default function Home(props) {
       "ws://7emezzo-dev.eba-uwfpyt28.eu-south-1.elasticbeanstalk.com/ws"
     );
     ws.onopen = () => {
-      console.log("WS connesso");
-      console.log("ID LOBBY", state.idLobby);
+      // console.log("WS connesso");
+      // console.log("ID LOBBY", state.idLobby);
       if (state.idLobby !== null) {
         console.log("riconnesso alla lobby");
         ws.send(JSON.stringify({ user_id: user.id, method: "connectLobby" }));
@@ -68,9 +68,9 @@ export default function Home(props) {
       // checkHost(JSON.parse(e.data));
     };
     ws.onclose = () => {
-      console.log("DISCONNESSO");
+      // console.log("DISCONNESSO");
       setTimeout(() => {
-        console.log("Riconnessione in corso");
+        // console.log("Riconnessione in corso");
         prepare();
       }, 1000);
     };

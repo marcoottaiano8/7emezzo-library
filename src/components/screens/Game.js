@@ -7,7 +7,15 @@ import {
   Image,
   Text,
 } from "react-native";
-import { getDataFromStorage } from "../utils/utils";
+
+import {
+  fetchData,
+  getDataFromStorage,
+} from "../utils/utils";
+
+import {
+  deleteLobby,
+} from "7emezzo-gs/dist/services/api/lobbyApi";
 
 //components
 import useResponsive from "../utils/useResponsive";
@@ -16,55 +24,166 @@ import CustomButton from "../CustomButton";
 
 var ws;
 var user;
-let connected = false;
 
-export default function Game() {
+const cards = [
+  require("../assets/images/cards/thanosA.jpg"),
+  require("../assets/images/cards/sandman2.jpg"),
+  require("../assets/images/cards/rhino3.jpg"),
+  require("../assets/images/cards/electro4.jpg"),
+  require("../assets/images/cards/mysterio5.jpg"),
+  require("../assets/images/cards/taskmaster6.jpg"),
+  require("../assets/images/cards/carnage7.jpg"),
+  require("../assets/images/cards/octopusJ.jpg"),
+  require("../assets/images/cards/goblinQ.jpg"),
+  require("../assets/images/cards/venomK.jpg"),
+]
+
+// let playerIndex = null
+
+export default function Game(props) {
   const [Mobile, Default, isDesktop] = useResponsive();
 
   const [state, setState] = useState({
-    idLobby: null,
+    match: null,
+    endGame: false
   });
 
   useEffect(() => {
-    prepare();
-    // initMatch();
+    connect();
   }, []);
 
+  useEffect(() => {
+    console.log("STATE", state);
+  }, [state])
+
+  useEffect(() => {
+    if (state.endGame) {
+      quitMatch()
+    }
+  }, [state.endGame]);
+
+  //connessione
   async function connect() {
     user = JSON.parse(await getDataFromStorage("user"));
+
     ws = new WebSocket(
       "ws://7emezzo-dev.eba-uwfpyt28.eu-south-1.elasticbeanstalk.com/ws"
     );
+
     ws.onopen = () => {
       console.log("WS connesso");
       ws.send(JSON.stringify({ user_id: user.id, method: "connectLobby" }));
     };
+
     ws.onmessage = (e) => {
-      console.log("ONMESSAGE", JSON.parse(e.data));
-      connected = true;
+      let msg = JSON.parse(e.data)
+
+      if (!!msg.hands) {
+        console.log("ONMESSAGE", msg);
+        // if (msg.ended) {
+        //   //la partita è finita
+        // }
+        // else {
+        //   storeGameData(msg)
+        // }
+
+        setState({
+          ...state,
+          match: msg,
+          endGame: msg.ended
+        })
+      }
+
     };
+
     ws.onclose = () => {
-      console.log("DISCONNESSO");
-      console.log("Riconnessione in corso");
+      // console.log("DISCONNESSO");
+      // console.log("Riconnessione in corso");
       connect();
     };
-  }
-  async function prepare() {
-    await connect();
-    initMatch();
+
+    setTimeout(() => {
+      ws.send(JSON.stringify({ user_id: user.id, method: "requestCard" }));
+    }, 1000)
   }
 
-  function initMatch() {
-    if (connected) {
+  //ritorna l'inidice del mio player nell'array degli users
+  function getPlayerIndex() {
+    let tempPlayerIndex = null
+    state?.match?.users?.forEach((element, index) => {
+      if (element.id === user.id)
+        tempPlayerIndex = index
+    })
+    return tempPlayerIndex
+  }
+
+  //ritorna la mia mano
+  function getMyHand() {
+    let playerIndex = getPlayerIndex()
+    let myHand = state?.match?.hands[playerIndex]
+    return myHand
+  }
+
+  //ritorna tutte le hands senza la mia
+  function getHands() {
+    let tempHands = state?.match?.hands?.filter((el) => el.user.id !== user.id)
+    return tempHands
+  }
+
+  //ritorna le mie carte
+  function getMyCards() {
+    return getMyHand()?.cards
+  }
+
+  function getMyTurn() {
+    return getMyHand()?.turn
+  }
+
+  //ritorna tutti i players
+  function getPlayers() {
+    let tempPlayers = state.match.users
+    return tempPlayers
+  }
+
+  function requestCard() {
+    setTimeout(() => {
       ws.send(JSON.stringify({ user_id: user.id, method: "requestCard" }));
       ws.send(JSON.stringify({ user_id: user.id, method: "checkEndMatch" }));
-    } else {
-      connect();
-    }
+    }, 1000)
   }
 
-  function log() {
-    console.log("ciao");
+  function stopPlaying() {
+    setTimeout(() => {
+      ws.send(JSON.stringify({ user_id: user.id, method: "stopPlaying" }));
+      ws.send(JSON.stringify({ user_id: user.id, method: "checkEndMatch" }));
+    }, 1000)
+
+  }
+
+  async function quitMatch() {
+    ws.send(JSON.stringify({ user_id: user.id, method: "quitMatch" }));
+    console.log('PARTITA FINITA');
+    // let res = await fetchData(deleteLobby)
+    if (!!props.callbackQuit) props.callbackQuit()
+  }
+
+  function getValueFromCard(card) {
+    let value = 0
+    switch (card.figure) {
+      case 'NUMBER':
+        value = card.value
+        break;
+      case 'FANTE':
+        value = 8
+        break;
+      case 'CAVALLO':
+        value = 9
+        break;
+      case 'RE':
+        value = 10
+        break;
+    }
+    return value - 1
   }
 
   return (
@@ -74,17 +193,54 @@ export default function Game() {
         resizeMode="cover"
         style={mobile.backgroundImg}
       >
-        <View
+        {!!state.match && <View
           style={[mobile.gameContainer, isDesktop && desktop.gameContainer]}
         >
           <View style={mobile.gameRow}>
-            <View
-              style={{
-                flexDirection: "row-reverse",
-              }}
-            >
+            {!!getHands()[1] ?
+              <View>
+                <View
+                  style={{
+                    flexDirection: "row-reverse",
+                  }}
+                >
+                  {getHands()[1].cards.map((el, key) => {
+                    return (
+                      <View key={key}>
+                        {key === 0 ?
+                          <Image
+                            source={cards[getValueFromCard(el)]}
+                            style={
+                              isDesktop
+                                ? [desktop.card, desktop.frontCard]
+                                : [mobile.card, mobile.frontCard]
+                            }
+                            resizeMode={"contain"}
+                          />
+                          :
+                          <Image
+                            source={require("../assets/images/cards/back.jpg")}
+                            style={[
+                              isDesktop
+                                ? [desktop.card, desktop.frontCard]
+                                : [mobile.card, mobile.frontCard],
+                              {
+                                marginRight: -45,
+                              },
+                            ]}
+                            resizeMode={"contain"}
+                          />
+                        }
+                      </View>
+                    )
+                  })}
+
+
+                </View>
+                <Text style={mobile.score}>{getHands()[1]?.cards[0]?.value}</Text>
+              </View> :
               <Image
-                source={require("../assets/images/cards/venomK.jpg")}
+                source={require("../assets/images/cards/back.jpg")}
                 style={
                   isDesktop
                     ? [desktop.card, desktop.frontCard]
@@ -92,131 +248,169 @@ export default function Game() {
                 }
                 resizeMode={"contain"}
               />
-              <Image
-                source={require("../assets/images/cards/electro4.jpg")}
-                style={[
-                  isDesktop
-                    ? [desktop.card, desktop.frontCard]
-                    : [mobile.card, mobile.frontCard],
-                  {
-                    marginRight: -45,
-                  },
-                ]}
-                resizeMode={"contain"}
-              />
-            </View>
-
-            <Text style={mobile.score}>6</Text>
+            }
           </View>
           <View
             style={[mobile.gameRowCenter, isDesktop && desktop.gameRowCenter]}
           >
             {/* <Text>Nome utente</Text> */}
-            <View style={mobile.cardContainer}>
-              <View
-                style={{
-                  flexDirection: "column",
-                }}
-              >
-                <Image
-                  source={require("../assets/images/cards/goblinQ.jpg")}
-                  style={
-                    isDesktop
-                      ? [desktop.card, desktop.leftCard]
-                      : [mobile.card, mobile.leftCard]
-                  }
-                  resizeMode={"contain"}
-                />
-                <Image
-                  source={require("../assets/images/cards/carnage7.jpg")}
-                  style={[
-                    isDesktop
-                      ? [desktop.card, desktop.leftCard]
-                      : [mobile.card, mobile.leftCard],
-                    {
-                      marginTop: -80,
-                    },
-                  ]}
-                  resizeMode={"contain"}
-                />
-              </View>
+            {!!getHands()[2] ?
+              <View style={mobile.cardContainer}>
+                <View
+                  style={{
+                    flexDirection: "column",
+                  }}
+                >
+                  {getHands()[2].cards.map((el, key) => {
+                    return (
+                      <View key={key}>
+                        {key === 0 ?
+                          <Image
+                            source={cards[getValueFromCard(el)]}
+                            style={
+                              isDesktop
+                                ? [desktop.card, desktop.leftCard]
+                                : [mobile.card, mobile.leftCard]
+                            }
+                            resizeMode={"contain"}
+                          />
+                          :
+                          <Image
+                            source={require("../assets/images/cards/back.jpg")}
+                            style={[
+                              isDesktop
+                                ? [desktop.card, desktop.leftCard]
+                                : [mobile.card, mobile.leftCard],
+                              {
+                                marginTop: -80,
+                              },
+                            ]}
+                            resizeMode={"contain"}
+                          />}
+                      </View>
+                    )
+                  })}
 
-              <Text style={mobile.score}>6</Text>
-            </View>
+                </View>
+                <Text style={mobile.score}>{getHands()[2]?.cards[0]?.value}</Text>
+              </View>
+              :
+              <Image
+                source={require("../assets/images/cards/back.jpg")}
+                style={
+                  isDesktop
+                    ? [desktop.card, desktop.leftCard]
+                    : [mobile.card, mobile.leftCard]
+                }
+                resizeMode={"contain"}
+              />
+            }
             <Image
               source={require("../assets/images/cards/back.jpg")}
               style={isDesktop ? desktop.card : mobile.card}
               resizeMode={"contain"}
             />
-            <View style={mobile.cardContainer}>
-              <Text style={mobile.score}>6</Text>
-              <View
-                style={{
-                  flexDirection: "column-reverse",
-                }}
-              >
-                <Image
-                  source={require("../assets/images/cards/rhino3.jpg")}
-                  style={
-                    isDesktop
-                      ? [desktop.card, desktop.rigthCard]
-                      : [mobile.card, mobile.rigthCard]
-                  }
-                  resizeMode={"contain"}
-                />
-                <Image
-                  source={require("../assets/images/cards/thanosA.jpg")}
-                  style={[
-                    isDesktop
-                      ? [desktop.card, desktop.rigthCard]
-                      : [mobile.card, mobile.rigthCard],
-                    {
-                      marginBottom: -80,
-                    },
-                  ]}
-                  resizeMode={"contain"}
-                />
-              </View>
-            </View>
+            {!!getHands()[0] ?
+              <View style={mobile.cardContainer}>
+                <Text style={mobile.score}>{getHands()[0]?.cards[0]?.value}</Text>
+                <View
+                  style={{
+                    flexDirection: "column-reverse",
+                  }}
+                >
+                  {getHands()[0].cards.map((el, key) => {
+                    return (
+                      <View key={key}>
+                        {key === 0 ? <Image
+                          source={cards[getValueFromCard(el)]}
+                          style={
+                            isDesktop
+                              ? [desktop.card, desktop.rigthCard]
+                              : [mobile.card, mobile.rigthCard]
+                          }
+                          resizeMode={"contain"}
+                        />
+                          :
+                          <Image
+                            source={require("../assets/images/cards/back.jpg")}
+                            style={[
+                              isDesktop
+                                ? [desktop.card, desktop.rigthCard]
+                                : [mobile.card, mobile.rigthCard],
+                              {
+                                marginBottom: -80,
+                              },
+                            ]}
+                            resizeMode={"contain"}
+                          />
+                        }
+                      </View>
+                    )
+                  })}
+
+
+                </View>
+              </View> :
+              <Image
+                source={require("../assets/images/cards/back.jpg")}
+                style={
+                  isDesktop
+                    ? [desktop.card, desktop.rigthCard]
+                    : [mobile.card, mobile.rigthCard]
+                }
+                resizeMode={"contain"}
+              />}
             {/* <Text>Nome utente</Text> */}
           </View>
           <View style={mobile.gameRow}>
             <Text style={mobile.text}>Effettua la tua giocata:</Text>
-            <Text style={mobile.score}>6</Text>
+            <Text style={mobile.score}>{getMyHand().cardValue}</Text>
             <View
               style={{
                 flexDirection: "row",
               }}
             >
-              <Image
-                source={require("../assets/images/cards/mysterio5.jpg")}
-                style={
-                  isDesktop
-                    ? [desktop.card, desktop.myCard]
-                    : [mobile.card, mobile.myCard]
-                }
-                resizeMode={"contain"}
-              />
-              <Image
-                source={require("../assets/images/cards/octopusJ.jpg")}
-                style={[
-                  isDesktop
-                    ? [desktop.card, desktop.myCard]
-                    : [mobile.card, mobile.myCard],
-                  {
-                    marginLeft: -45,
-                  },
-                ]}
-                resizeMode={"contain"}
-              />
+              {getMyCards().map((el, key) => {
+                return (
+                  <View key={key}>
+                    {key === 0 ?
+                      <Image
+                        source={cards[getValueFromCard(el)]}
+                        style={
+                          isDesktop
+                            ? [desktop.card, desktop.myCard]
+                            : [mobile.card, mobile.myCard]
+                        }
+                        resizeMode={"contain"}
+                      /> : <Image
+                        source={cards[getValueFromCard(el)]}
+                        style={[
+                          isDesktop
+                            ? [desktop.card, desktop.myCard]
+                            : [mobile.card, mobile.myCard],
+                          {
+                            marginLeft: -45,
+                          },
+                        ]}
+                        resizeMode={"contain"}
+                      />
+                    }
+                  </View>
+                )
+              })}
+
+
             </View>
           </View>
-        </View>
+        </View>}
         <View
           style={[mobile.buttonContainer, isDesktop && desktop.buttonContainer]}
         >
-          <CustomButton label={"Carta"} callback={log} />
-          <CustomButton label={"Stai"} callback={log} />
+          <View style={{ flexDirection: 'row' }}>
+            <CustomButton label={"Carta"} disable={!getMyTurn()} callback={requestCard} />
+            <CustomButton label={"Stai"} disable={!getMyTurn()} callback={stopPlaying} />
+          </View>
+          <CustomButton label={"Esci"} callback={quitMatch} />
         </View>
       </ImageBackground>
     </View>
@@ -236,7 +430,7 @@ const mobile = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    flexDirection: "row",
+    flexDirection: "column",
   },
   cardContainer: {
     alignItems: "center",
