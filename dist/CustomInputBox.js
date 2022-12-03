@@ -30,8 +30,10 @@ function CustomInputBox(props) {
     state = _useState2[0],
     setState = _useState2[1];
   function changeInput(e) {
+    var value;
+    props.type === "number" ? value = e.replace(/[^0-9]/g, "") : value = e;
     setState({
-      value: e
+      value: value
     });
     if (!!props.callbackChange) props.callbackChange(e);
   }

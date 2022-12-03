@@ -47,11 +47,12 @@ export default function Home(props) {
 
   //component did mount
   useEffect(() => {
-    prepare();
+    connect();
   }, []);
 
-  async function prepare() {
+  async function connect() {
     user = JSON.parse(await getDataFromStorage("user"));
+
     ws = new WebSocket(
       "ws://7emezzo-dev.eba-uwfpyt28.eu-south-1.elasticbeanstalk.com/ws"
     );
@@ -59,20 +60,26 @@ export default function Home(props) {
       // console.log("WS connesso");
       // console.log("ID LOBBY", state.idLobby);
       if (state.idLobby !== null) {
-        console.log("riconnesso alla lobby");
+        // console.log("riconnesso alla lobby");
         ws.send(JSON.stringify({ user_id: user.id, method: "connectLobby" }));
       }
     };
+
     ws.onmessage = (e) => {
-      console.log("ONMESSAGE", JSON.parse(e.data));
+      let msg = JSON.parse(e.data);
+      console.log("ONMESSAGE", msg);
+
+      if (!!msg.hands) {
+        ws.close();
+        if (!!props.goToGame) props.goToGame();
+      }
+
       // checkHost(JSON.parse(e.data));
     };
+
     ws.onclose = () => {
       // console.log("DISCONNESSO");
-      setTimeout(() => {
-        // console.log("Riconnessione in corso");
-        prepare();
-      }, 1000);
+      connect();
     };
   }
 
