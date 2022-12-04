@@ -12,6 +12,7 @@ var _lobbyApi = require("7emezzo-gs/dist/services/api/lobbyApi");
 var _useResponsive3 = _interopRequireDefault(require("../utils/useResponsive"));
 var _commonStyle = _interopRequireDefault(require("../style/commonStyle"));
 var _CustomButton = _interopRequireDefault(require("../CustomButton"));
+var _CustomModal = _interopRequireDefault(require("../CustomModal"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
 function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || _typeof(obj) !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
@@ -36,7 +37,6 @@ var cards = [require("../assets/images/cards/thanosA.jpg"), require("../assets/i
 // let playerIndex = null
 
 function Game(props) {
-  var _getHands$, _getHands$$cards$, _getHands$2, _getHands$2$cards$, _getHands$3, _getHands$3$cards$;
   var _useResponsive = (0, _useResponsive3.default)(),
     _useResponsive2 = _slicedToArray(_useResponsive, 3),
     Mobile = _useResponsive2[0],
@@ -44,7 +44,8 @@ function Game(props) {
     isDesktop = _useResponsive2[2];
   var _useState = (0, _react.useState)({
       match: null,
-      endGame: false
+      endGame: false,
+      winnerModal: false
     }),
     _useState2 = _slicedToArray(_useState, 2),
     state = _useState2[0],
@@ -55,11 +56,12 @@ function Game(props) {
   (0, _react.useEffect)(function () {
     console.log("STATE", state);
   }, [state]);
-  (0, _react.useEffect)(function () {
-    if (state.endGame) {
-      quitMatch();
-    }
-  }, [state.endGame]);
+
+  // useEffect(() => {
+  //   if (state.endGame) {
+  //     quitMatch();
+  //   }
+  // }, [state.endGame]);
 
   //connessione
   function connect() {
@@ -87,24 +89,16 @@ function Game(props) {
               };
               ws.onmessage = function (e) {
                 var msg = JSON.parse(e.data);
-                if (!!msg.hands) {
+                if (!!msg.hands && !state.endGame) {
                   console.log("ONMESSAGE", msg);
-                  // if (msg.ended) {
-                  //   //la partita è finita
-                  // }
-                  // else {
-                  //   storeGameData(msg)
-                  // }
-
                   setState(_objectSpread(_objectSpread({}, state), {}, {
                     match: msg,
-                    endGame: msg.ended
+                    endGame: msg.ended,
+                    winnerModal: msg.ended ? true : false
                   }));
                 }
               };
               ws.onclose = function () {
-                // console.log("DISCONNESSO");
-                // console.log("Riconnessione in corso");
                 connect();
               };
               setTimeout(function () {
@@ -112,7 +106,7 @@ function Game(props) {
                   user_id: user.id,
                   method: "requestCard"
                 }));
-              }, 1000);
+              }, 300);
             case 10:
             case "end":
               return _context.stop();
@@ -160,8 +154,23 @@ function Game(props) {
 
   //ritorna tutti i players
   function getPlayers() {
-    var tempPlayers = state.match.users;
+    var tempPlayers = state.match.users.filter(function (el) {
+      return el.id !== user.id;
+    });
     return tempPlayers;
+  }
+
+  //ritorna i vincitori
+  function getWinners() {
+    var _state$match4, _state$match5;
+    return !!(state !== null && state !== void 0 && (_state$match4 = state.match) !== null && _state$match4 !== void 0 && _state$match4.winners) ? state === null || state === void 0 ? void 0 : (_state$match5 = state.match) === null || _state$match5 === void 0 ? void 0 : _state$match5.winners : [];
+  }
+  function goToHome() {
+    ws.send(JSON.stringify({
+      user_id: user.id,
+      method: "quitMatch"
+    }));
+    if (!!props.callbackQuit) props.callbackQuit();
   }
   function requestCard() {
     setTimeout(function () {
@@ -173,7 +182,7 @@ function Game(props) {
         user_id: user.id,
         method: "checkEndMatch"
       }));
-    }, 1000);
+    }, 200);
   }
   function stopPlaying() {
     setTimeout(function () {
@@ -185,46 +194,21 @@ function Game(props) {
         user_id: user.id,
         method: "checkEndMatch"
       }));
-    }, 1000);
-  }
-  function quitMatch() {
-    return _quitMatch.apply(this, arguments);
-  }
-  function _quitMatch() {
-    _quitMatch = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
-      return _regeneratorRuntime().wrap(function _callee2$(_context2) {
-        while (1) {
-          switch (_context2.prev = _context2.next) {
-            case 0:
-              ws.send(JSON.stringify({
-                user_id: user.id,
-                method: "quitMatch"
-              }));
-              console.log('PARTITA FINITA');
-              // let res = await fetchData(deleteLobby)
-              if (!!props.callbackQuit) props.callbackQuit();
-            case 3:
-            case "end":
-              return _context2.stop();
-          }
-        }
-      }, _callee2);
-    }));
-    return _quitMatch.apply(this, arguments);
+    }, 200);
   }
   function getValueFromCard(card) {
     var value = 0;
     switch (card.figure) {
-      case 'NUMBER':
+      case "NUMBER":
         value = card.value;
         break;
-      case 'FANTE':
+      case "FANTE":
         value = 8;
         break;
-      case 'CAVALLO':
+      case "CAVALLO":
         value = 9;
         break;
-      case 'RE':
+      case "RE":
         value = 10;
         break;
     }
@@ -258,9 +242,7 @@ function Game(props) {
       }],
       resizeMode: "contain"
     }));
-  })), /*#__PURE__*/_react.default.createElement(_reactNative.Text, {
-    style: mobile.score
-  }, (_getHands$ = getHands()[1]) === null || _getHands$ === void 0 ? void 0 : (_getHands$$cards$ = _getHands$.cards[0]) === null || _getHands$$cards$ === void 0 ? void 0 : _getHands$$cards$.value)) : /*#__PURE__*/_react.default.createElement(_reactNative.Image, {
+  }))) : /*#__PURE__*/_react.default.createElement(_reactNative.Image, {
     source: require("../assets/images/cards/back.jpg"),
     style: isDesktop ? [desktop.card, desktop.frontCard] : [mobile.card, mobile.frontCard],
     resizeMode: "contain"
@@ -286,21 +268,21 @@ function Game(props) {
       }],
       resizeMode: "contain"
     }));
-  })), /*#__PURE__*/_react.default.createElement(_reactNative.Text, {
-    style: mobile.score
-  }, (_getHands$2 = getHands()[2]) === null || _getHands$2 === void 0 ? void 0 : (_getHands$2$cards$ = _getHands$2.cards[0]) === null || _getHands$2$cards$ === void 0 ? void 0 : _getHands$2$cards$.value)) : /*#__PURE__*/_react.default.createElement(_reactNative.Image, {
+  }))) : /*#__PURE__*/_react.default.createElement(_reactNative.View, {
+    style: {
+      flexDirection: "row"
+    }
+  }, /*#__PURE__*/_react.default.createElement(_reactNative.Image, {
     source: require("../assets/images/cards/back.jpg"),
     style: isDesktop ? [desktop.card, desktop.leftCard] : [mobile.card, mobile.leftCard],
     resizeMode: "contain"
-  }), /*#__PURE__*/_react.default.createElement(_reactNative.Image, {
+  })), /*#__PURE__*/_react.default.createElement(_reactNative.Image, {
     source: require("../assets/images/cards/back.jpg"),
     style: isDesktop ? desktop.card : mobile.card,
     resizeMode: "contain"
   }), !!getHands()[0] ? /*#__PURE__*/_react.default.createElement(_reactNative.View, {
     style: mobile.cardContainer
-  }, /*#__PURE__*/_react.default.createElement(_reactNative.Text, {
-    style: mobile.score
-  }, (_getHands$3 = getHands()[0]) === null || _getHands$3 === void 0 ? void 0 : (_getHands$3$cards$ = _getHands$3.cards[0]) === null || _getHands$3$cards$ === void 0 ? void 0 : _getHands$3$cards$.value), /*#__PURE__*/_react.default.createElement(_reactNative.View, {
+  }, /*#__PURE__*/_react.default.createElement(_reactNative.View, {
     style: {
       flexDirection: "column-reverse"
     }
@@ -326,7 +308,7 @@ function Game(props) {
     style: mobile.gameRow
   }, /*#__PURE__*/_react.default.createElement(_reactNative.Text, {
     style: mobile.text
-  }, "Effettua la tua giocata:"), /*#__PURE__*/_react.default.createElement(_reactNative.Text, {
+  }, getMyTurn() ? "Effettua la tua giocata" : "Aspetta il tuo turno"), /*#__PURE__*/_react.default.createElement(_reactNative.Text, {
     style: mobile.score
   }, getMyHand().cardValue), /*#__PURE__*/_react.default.createElement(_reactNative.View, {
     style: {
@@ -350,7 +332,7 @@ function Game(props) {
     style: [mobile.buttonContainer, isDesktop && desktop.buttonContainer]
   }, /*#__PURE__*/_react.default.createElement(_reactNative.View, {
     style: {
-      flexDirection: 'row'
+      flexDirection: "row"
     }
   }, /*#__PURE__*/_react.default.createElement(_CustomButton.default, {
     label: "Carta",
@@ -362,8 +344,30 @@ function Game(props) {
     callback: stopPlaying
   })), /*#__PURE__*/_react.default.createElement(_CustomButton.default, {
     label: "Esci",
-    callback: quitMatch
-  }))));
+    callback: goToHome
+  })), /*#__PURE__*/_react.default.createElement(_CustomModal.default, {
+    visible: state.winnerModal,
+    callbackClose: goToHome
+  }, /*#__PURE__*/_react.default.createElement(_reactNative.Text, {
+    style: mobile.score
+  }, "Risultati:"), !!getWinners() && getWinners().length === 0 ? /*#__PURE__*/_react.default.createElement(_reactNative.View, null, /*#__PURE__*/_react.default.createElement(_reactNative.Text, {
+    style: mobile.text
+  }, "Nessun vincitore")) : getWinners().length === 1 ? /*#__PURE__*/_react.default.createElement(_reactNative.View, null, /*#__PURE__*/_react.default.createElement(_reactNative.Text, {
+    style: mobile.text
+  }, getWinners()[0].username, " vince")) : /*#__PURE__*/_react.default.createElement(_reactNative.View, {
+    style: {
+      alignItems: "center",
+      justifyContent: "center",
+      flexDirection: "row"
+    }
+  }, getWinners().map(function (el, key) {
+    return /*#__PURE__*/_react.default.createElement(_reactNative.Text, {
+      style: mobile.text,
+      key: key
+    }, el.username, getWinners().length - 1 !== key ? " e " : " ");
+  }), /*#__PURE__*/_react.default.createElement(_reactNative.Text, {
+    style: mobile.text
+  }, "vincono")))));
 }
 var mobile = _reactNative.StyleSheet.create({
   mainContainer: {
@@ -423,12 +427,14 @@ var mobile = _reactNative.StyleSheet.create({
   score: {
     fontSize: 30,
     color: "white",
-    fontWeight: "bold"
+    fontWeight: "bold",
+    textAlign: "center"
   },
   text: {
     fontSize: 20,
     color: "white",
-    fontWeight: "bold"
+    fontWeight: "bold",
+    textAlign: "center"
     // paddingBottom: 1,
   },
 
@@ -471,6 +477,7 @@ var desktop = _reactNative.StyleSheet.create({
     marginBottom: -20
   },
   buttonContainer: {
+    flexDirection: "row",
     justifyContent: "space-around"
   }
 });

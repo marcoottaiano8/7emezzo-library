@@ -46,7 +46,8 @@ function Home(props) {
       joinLobbyModal: false,
       modalMessage: "",
       startGameVisible: true,
-      idLobby: null
+      idLobby: null,
+      msg: null
     }),
     _useState2 = _slicedToArray(_useState, 2),
     state = _useState2[0],
@@ -58,15 +59,7 @@ function Home(props) {
   }, []);
   function connect() {
     return _connect.apply(this, arguments);
-  } // function checkHost(lobby) {
-  //   let startGameVisible = false;
-  //   if (lobby.users[0].id === user.id) startGameVisible = true;
-  //   setState({
-  //     ...state,
-  //     startGameVisible: startGameVisible,
-  //   });
-  // }
-  //partita veloce
+  } //partita veloce
   function _connect() {
     _connect = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
       return _regeneratorRuntime().wrap(function _callee$(_context) {
@@ -81,10 +74,8 @@ function Home(props) {
               user = _context.t0.parse.call(_context.t0, _context.t1);
               ws = new WebSocket("ws://7emezzo-dev.eba-uwfpyt28.eu-south-1.elasticbeanstalk.com/ws");
               ws.onopen = function () {
-                // console.log("WS connesso");
-                // console.log("ID LOBBY", state.idLobby);
+                console.log("WS connesso");
                 if (state.idLobby !== null) {
-                  // console.log("riconnesso alla lobby");
                   ws.send(JSON.stringify({
                     user_id: user.id,
                     method: "connectLobby"
@@ -98,12 +89,8 @@ function Home(props) {
                   ws.close();
                   if (!!props.goToGame) props.goToGame();
                 }
-
-                // checkHost(JSON.parse(e.data));
               };
-
               ws.onclose = function () {
-                // console.log("DISCONNESSO");
                 connect();
               };
             case 9:
@@ -144,7 +131,7 @@ function Home(props) {
               }
               setState(_objectSpread(_objectSpread({}, state), {}, {
                 fastGameModal: true,
-                // startGameVisible: startGameVisible,
+                startGameVisible: startGameVisible,
                 modalMessage: message,
                 idLobby: idLobby
               }));
@@ -186,7 +173,7 @@ function Home(props) {
               }
               setState(_objectSpread(_objectSpread({}, state), {}, {
                 createLobbyModal: true,
-                // startGameVisible: startGameVisible,
+                startGameVisible: startGameVisible,
                 modalMessage: message,
                 idLobby: idLobby
               }));
@@ -290,7 +277,7 @@ function Home(props) {
                 }));
               }
               setState(_objectSpread(_objectSpread({}, state), {}, {
-                // startGameVisible: startGameVisible,
+                startGameVisible: startGameVisible,
                 modalMessage: message,
                 idLobby: idLobby
               }));
@@ -345,7 +332,7 @@ function Home(props) {
     style: mobile.modalContainer
   }, /*#__PURE__*/_react.default.createElement(_reactNative.Text, {
     style: mobile.text
-  }, state.modalMessage), state.startGameVisible && /*#__PURE__*/_react.default.createElement(_reactNative.View, {
+  }, state.modalMessage), /*#__PURE__*/_react.default.createElement(_reactNative.View, {
     style: {
       marginTop: 40,
       marginBottom: -30
@@ -385,7 +372,7 @@ function Home(props) {
     callback: searchLobby
   })) : /*#__PURE__*/_react.default.createElement(_reactNative.View, null, /*#__PURE__*/_react.default.createElement(_reactNative.Text, {
     style: mobile.text
-  }, state.modalMessage), state.startGameVisible && /*#__PURE__*/_react.default.createElement(_reactNative.View, {
+  }, state.modalMessage), /*#__PURE__*/_react.default.createElement(_reactNative.View, {
     style: {
       marginTop: 40,
       marginBottom: -30
@@ -421,6 +408,6 @@ var mobile = _reactNative.StyleSheet.create({
 var desktop = _reactNative.StyleSheet.create({
   container: {
     justifyContent: "flex-start",
-    marginTop: 100
+    marginTop: 50
   }
 });

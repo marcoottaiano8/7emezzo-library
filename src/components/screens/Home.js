@@ -5,14 +5,11 @@ import {
   StyleSheet,
   Dimensions,
   Text,
-  Image
+  Image,
 } from "react-native";
 
 //api
-import {
-  fetchData,
-  getDataFromStorage,
-} from "../utils/utils";
+import { fetchData, getDataFromStorage } from "../utils/utils";
 import {
   postLobby,
   putLobby,
@@ -40,6 +37,7 @@ export default function Home(props) {
     modalMessage: "",
     startGameVisible: true,
     idLobby: null,
+    msg: null,
   });
 
   //component did mount
@@ -68,7 +66,6 @@ export default function Home(props) {
         ws.close();
         if (!!props.goToGame) props.goToGame();
       }
-
     };
 
     ws.onclose = () => {
@@ -221,16 +218,16 @@ export default function Home(props) {
           <Text style={[mobile.text, mobile.title]}>Lobby {state.idLobby}</Text>
           <View style={mobile.modalContainer}>
             <Text style={mobile.text}>{state.modalMessage}</Text>
-            {state.startGameVisible && (
-              <View
-                style={{
-                  marginTop: 40,
-                  marginBottom: -30,
-                }}
-              >
-                <CustomButton label="Inizia partita" callback={startMatch} />
-              </View>
-            )}
+            {/* {state.startGameVisible && ( */}
+            <View
+              style={{
+                marginTop: 40,
+                marginBottom: -30,
+              }}
+            >
+              <CustomButton label="Inizia partita" callback={startMatch} />
+            </View>
+            {/* )} */}
           </View>
         </CustomModal>
         <CustomModal visible={state.createLobbyModal} callbackClose={quitLobby}>
@@ -262,19 +259,16 @@ export default function Home(props) {
             ) : (
               <View>
                 <Text style={mobile.text}>{state.modalMessage}</Text>
-                {state.startGameVisible && (
-                  <View
-                    style={{
-                      marginTop: 40,
-                      marginBottom: -30,
-                    }}
-                  >
-                    <CustomButton
-                      label="Inizia partita"
-                      callback={startMatch}
-                    />
-                  </View>
-                )}
+                {/* {state.startGameVisible && ( */}
+                <View
+                  style={{
+                    marginTop: 40,
+                    marginBottom: -30,
+                  }}
+                >
+                  <CustomButton label="Inizia partita" callback={startMatch} />
+                </View>
+                {/* )} */}
               </View>
             )}
           </View>

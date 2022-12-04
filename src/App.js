@@ -14,8 +14,8 @@ function App() {
   return (
     <Provider store={store}>
       <View>
-        <Game/>
-        {/* <Home/> */}
+        {/* <Game/> */}
+        <Home/>
         {/* <Login /> */}
       </View>
     </Provider>
