@@ -88,8 +88,6 @@ export default function Game(props) {
     };
 
     ws.onclose = () => {
-      // console.log("DISCONNESSO");
-      // console.log("Riconnessione in corso");
       connect();
     };
 
