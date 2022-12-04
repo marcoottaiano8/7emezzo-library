@@ -5,16 +5,13 @@ import {
   StyleSheet,
   Dimensions,
   Text,
-  Image,
-  TouchableOpacity,
-  TextInput,
+  Image
 } from "react-native";
 
 //api
 import {
   fetchData,
   getDataFromStorage,
-  setDataInStorage,
 } from "../utils/utils";
 import {
   postLobby,
@@ -57,10 +54,8 @@ export default function Home(props) {
       "ws://7emezzo-dev.eba-uwfpyt28.eu-south-1.elasticbeanstalk.com/ws"
     );
     ws.onopen = () => {
-      // console.log("WS connesso");
-      // console.log("ID LOBBY", state.idLobby);
+      console.log("WS connesso");
       if (state.idLobby !== null) {
-        // console.log("riconnesso alla lobby");
         ws.send(JSON.stringify({ user_id: user.id, method: "connectLobby" }));
       }
     };
@@ -74,24 +69,12 @@ export default function Home(props) {
         if (!!props.goToGame) props.goToGame();
       }
 
-      // checkHost(JSON.parse(e.data));
     };
 
     ws.onclose = () => {
-      // console.log("DISCONNESSO");
       connect();
     };
   }
-
-  // function checkHost(lobby) {
-  //   let startGameVisible = false;
-  //   if (lobby.users[0].id === user.id) startGameVisible = true;
-
-  //   setState({
-  //     ...state,
-  //     startGameVisible: startGameVisible,
-  //   });
-  // }
 
   //partita veloce
   async function setFastGameModal() {
@@ -111,7 +94,7 @@ export default function Home(props) {
     setState({
       ...state,
       fastGameModal: true,
-      // startGameVisible: startGameVisible,
+      startGameVisible: startGameVisible,
       modalMessage: message,
       idLobby: idLobby,
     });
@@ -134,7 +117,7 @@ export default function Home(props) {
     setState({
       ...state,
       createLobbyModal: true,
-      // startGameVisible: startGameVisible,
+      startGameVisible: startGameVisible,
       modalMessage: message,
       idLobby: idLobby,
     });
@@ -202,7 +185,7 @@ export default function Home(props) {
 
     setState({
       ...state,
-      // startGameVisible: startGameVisible,
+      startGameVisible: startGameVisible,
       modalMessage: message,
       idLobby: idLobby,
     });
@@ -328,6 +311,6 @@ const mobile = StyleSheet.create({
 const desktop = StyleSheet.create({
   container: {
     justifyContent: "flex-start",
-    marginTop: 100,
+    marginTop: 50,
   },
 });

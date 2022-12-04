@@ -80,12 +80,6 @@ export default function Game(props) {
 
       if (!!msg.hands) {
         console.log("ONMESSAGE", msg);
-        // if (msg.ended) {
-        //   //la partita è finita
-        // }
-        // else {
-        //   storeGameData(msg)
-        // }
 
         setState({
           ...state,
@@ -97,8 +91,6 @@ export default function Game(props) {
     };
 
     ws.onclose = () => {
-      // console.log("DISCONNESSO");
-      // console.log("Riconnessione in corso");
       connect();
     };
 
